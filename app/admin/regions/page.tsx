@@ -41,7 +41,7 @@ export default async function AdminRegionsPage() {
           <tbody>
             {regions.map((region, index) => (
               <tr key={region.id} className="border-t">
-                <td className="px-4 py-3 font-medium">{++index}</td>
+                <td className="px-4 py-3 font-medium">{index +1}</td>
                 <td className="px-4 py-3 font-medium">{region.name}</td>
                 <td className="px-4 py-3 text-center">{region._count.kosts}</td>
                 <td className="px-4 py-3">
