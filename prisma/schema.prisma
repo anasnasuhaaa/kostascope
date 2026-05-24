@@ -7,6 +7,97 @@ datasource db {
   provider = "postgresql"
 }
 
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String?
+  createdAt    DateTime @default(now())
+  passwordHash String
+  role         Role     @default(ADMIN)
+  updatedAt    DateTime @updatedAt
+}
+
+model Region {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  kosts     Kost[]
+}
+
+model Facility {
+  id        String         @id @default(cuid())
+  name      String         @unique
+  slug      String         @unique
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  kosts     KostFacility[]
+}
+
+model Kost {
+  id                       String          @id @default(cuid())
+  name                     String
+  slug                     String          @unique
+  description              String?
+  contactWhatsapp          String
+  roomSize                 String?
+  distanceToCampusInMeters Int?
+  googleMapsUrl            String?
+  genderType               GenderType?
+  waterFeeType             WaterFeeType    @default(NOT_INCLUDED)
+  electricityType          ElectricityType @default(SEPARATE)
+  status                   KostStatus      @default(DRAFT)
+  isFeatured               Boolean         @default(false)
+  regionId                 String
+  createdAt                DateTime        @default(now())
+  updatedAt                DateTime        @updatedAt
+  publishedAt              DateTime?
+  region                   Region          @relation(fields: [regionId], references: [id])
+  facilities               KostFacility[]
+  images                   KostImage[]
+  prices                   KostPrice[]
+
+  @@index([regionId])
+  @@index([status])
+  @@index([isFeatured])
+}
+
+model KostPrice {
+  id        String        @id @default(cuid())
+  type      RentPriceType
+  price     Int
+  kostId    String
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  kost      Kost          @relation(fields: [kostId], references: [id], onDelete: Cascade)
+
+  @@unique([kostId, type])
+  @@index([kostId])
+}
+
+model KostImage {
+  id        String   @id @default(cuid())
+  url       String
+  altText   String?
+  sortOrder Int      @default(0)
+  kostId    String
+  createdAt DateTime @default(now())
+  kost      Kost     @relation(fields: [kostId], references: [id], onDelete: Cascade)
+
+  @@index([kostId])
+}
+
+model KostFacility {
+  kostId     String
+  facilityId String
+  facility   Facility @relation(fields: [facilityId], references: [id], onDelete: Cascade)
+  kost       Kost     @relation(fields: [kostId], references: [id], onDelete: Cascade)
+
+  @@id([kostId, facilityId])
+  @@index([facilityId])
+}
+
 enum Role {
   ADMIN
   SUPER_ADMIN
@@ -35,97 +126,8 @@ enum GenderType {
   CAMPUR
 }
 
-model User {
-  id           String   @id @default(cuid())
-  name         String?
-  email        String   @unique
-  passwordHash String
-  role         Role     @default(ADMIN)
-
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-}
-
-model Region {
-  id        String   @id @default(cuid())
-  name      String   @unique
-  slug      String   @unique
-
-  kosts     Kost[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Facility {
-  id        String   @id @default(cuid())
-  name      String   @unique
-  slug      String   @unique
-
-  kosts     KostFacility[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Kost {
-  id                        String          @id @default(cuid())
-
-  name                      String
-  slug                      String          @unique
-  description               String?
-  contactWhatsapp           String
-
-  priceMonthly              Int?
-  roomSize                  String?
-  distanceToCampusInMeters  Int?
-
-  googleMapsUrl             String?
-  genderType                GenderType?
-
-  waterFeeType              WaterFeeType    @default(NOT_INCLUDED)
-  electricityType           ElectricityType @default(SEPARATE)
-
-  status                    KostStatus      @default(DRAFT)
-  isFeatured                Boolean         @default(false)
-
-  regionId                  String
-  region                    Region          @relation(fields: [regionId], references: [id])
-
-  images                    KostImage[]
-  facilities                KostFacility[]
-
-  createdAt                 DateTime        @default(now())
-  updatedAt                 DateTime        @updatedAt
-  publishedAt               DateTime?
-
-  @@index([regionId])
-  @@index([status])
-  @@index([isFeatured])
-  @@index([priceMonthly])
-}
-
-model KostImage {
-  id        String   @id @default(cuid())
-  url       String
-  altText   String?
-  sortOrder Int      @default(0)
-
-  kostId    String
-  kost      Kost     @relation(fields: [kostId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-
-  @@index([kostId])
-}
-
-model KostFacility {
-  kostId     String
-  facilityId String
-
-  kost       Kost     @relation(fields: [kostId], references: [id], onDelete: Cascade)
-  facility   Facility @relation(fields: [facilityId], references: [id], onDelete: Cascade)
-
-  @@id([kostId, facilityId])
-  @@index([facilityId])
+enum RentPriceType {
+  MONTHLY
+  SIX_MONTHS
+  YEARLY
 }
