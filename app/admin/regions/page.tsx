@@ -2,6 +2,7 @@ import DeleteConfirmDialog from "@/components/delete-confirm-dialog";
 import RegionModal from "@/features/region/region-modal";
 import { deleteRegionAction } from "@/features/region/actions";
 import { prisma } from "@/lib/prisma";
+export const dynamic = "force-dynamic";
 
 export default async function AdminRegionsPage() {
   const regions = await prisma.region.findMany({

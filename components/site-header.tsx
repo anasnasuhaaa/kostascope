@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
@@ -26,8 +27,19 @@ export default function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-red-100/70 bg-white/90 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="text-xl font-extrabold tracking-tight text-[#BE1E2D]">
-          Kostascope
+        <Link
+          href="/"
+          className="flex items-center gap-2 text-xl font-extrabold tracking-tight text-[#BE1E2D]"
+        >
+          <Image
+            src="/kostalogo.png"
+            alt="Kostascope Logo"
+            width={36}
+            height={36}
+            priority
+            className="h-9 w-9 rounded-lg object-contain"
+          />
+          <span>Kostascope</span>
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
@@ -62,34 +74,34 @@ export default function SiteHeader() {
           </Link>
         </div>
 
-      <button
-  type="button"
-  onClick={() => setOpen((value) => !value)}
-  aria-label={open ? "Tutup menu" : "Buka menu"}
-  aria-expanded={open}
-  className="flex h-10 w-10 items-center justify-center rounded-md border border-red-100 text-[#BE1E2D] transition hover:bg-red-50 md:hidden"
->
-  <span className="relative h-5 w-5">
-    <span
-      className={[
-        "absolute left-1/2 top-1/2 h-0.5 w-5 -translate-x-1/2 rounded-full bg-current transition-all duration-300",
-        open ? "-translate-y-1/2 rotate-45" : "-translate-y-[7px]",
-      ].join(" ")}
-    />
-    <span
-      className={[
-        "absolute left-1/2 top-1/2 h-0.5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-current transition-all duration-300",
-        open ? "scale-x-0 opacity-0" : "scale-x-100 opacity-100",
-      ].join(" ")}
-    />
-    <span
-      className={[
-        "absolute left-1/2 top-1/2 h-0.5 w-5 -translate-x-1/2 rounded-full bg-current transition-all duration-300",
-        open ? "-translate-y-1/2 -rotate-45" : "translate-y-[7px]",
-      ].join(" ")}
-    />
-  </span>
-</button>
+        <button
+          type="button"
+          onClick={() => setOpen((value) => !value)}
+          aria-label={open ? "Tutup menu" : "Buka menu"}
+          aria-expanded={open}
+          className="flex h-10 w-10 items-center justify-center rounded-md border border-red-100 text-[#BE1E2D] transition hover:bg-red-50 md:hidden"
+        >
+          <span className="relative h-5 w-5">
+            <span
+              className={[
+                "absolute left-1/2 top-1/2 h-0.5 w-5 -translate-x-1/2 rounded-full bg-current transition-all duration-300",
+                open ? "-translate-y-1/2 rotate-45" : "-translate-y-1.75",
+              ].join(" ")}
+            />
+            <span
+              className={[
+                "absolute left-1/2 top-1/2 h-0.5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-current transition-all duration-300",
+                open ? "scale-x-0 opacity-0" : "scale-x-100 opacity-100",
+              ].join(" ")}
+            />
+            <span
+              className={[
+                "absolute left-1/2 top-1/2 h-0.5 w-5 -translate-x-1/2 rounded-full bg-current transition-all duration-300",
+                open ? "-translate-y-1/2 -rotate-45" : "translate-y-1.75",
+              ].join(" ")}
+            />
+          </span>
+        </button>
       </div>
 
       {open && (

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 import SiteFooter from "@/components/site-footer";
 import SiteHeader from "@/components/site-header";
@@ -51,43 +52,50 @@ export default function AboutPage() {
       <SiteHeader />
 
       <main>
-        <section className="relative overflow-hidden bg-linear-to-br from-white via-[#FFF7F8] to-[#F4F6FF] py-24">
+        <section className="relative overflow-hidden bg-linear-to-br from-white via-[#FFF7F8] to-[#F4F6FF] py-10 md:py-24">
           <div className="absolute -left-40 top-32 h-80 w-80 rounded-full bg-[#BE1E2D]/15 blur-3xl" />
           <div className="absolute -right-40 bottom-0 h-80 w-80 rounded-full bg-[#BE1E2D]/10 blur-3xl" />
 
-          <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
+          <div className="relative mx-auto grid max-w-7xl items-center gap-8 md:gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
             <div>
-              <div className="mb-5 inline-flex rounded-full bg-red-50 px-4 py-2 text-xs font-bold text-[#BE1E2D]">
+              {/* <div className="mb-5 inline-flex rounded-full bg-red-50 px-4 py-2 text-xs font-bold text-[#BE1E2D]">
                 Visi & Misi Kami
-              </div>
+              </div> */}
               <h1 className="text-4xl font-black tracking-tight sm:text-5xl">
                 Tentang <span className="text-[#BE1E2D]">Kostascope</span>
               </h1>
               <p className="mt-6 max-w-xl text-base leading-8 text-zinc-600">
-                Membantu mahasiswa dan calon mahasiswa IPB memahami pilihan
-                hunian dengan cara yang lebih mudah, rapi, dan relevan dengan
-                kebutuhan hidup di kampus.
+                Kostascope hadir sebagai program kerja Biro Riset dan Teknologi Ormawa Eksekutif PKU untuk membantu mahasiswa baru IPB mengenal berbagai pilihan kost di sekitar Kampus IPB Dramaga. Dengan informasi yang disusun secara rapi dan mudah dipahami, Kostascope diharapkan dapat mempermudah proses pencarian hunian bagi mahasiswa baru.
               </p>
             </div>
 
             <div className="relative">
               <div className="overflow-hidden rounded-3xl bg-[#4A0D16] p-3 shadow-2xl shadow-red-950/20">
-                <div className="aspect-4/3 rounded-2xl bg-linear-to-br from-red-50 via-white to-[#BE1E2D]/20" />
+                <div className="relative aspect-4/3 overflow-hidden rounded-2xl bg-red-50">
+                  <Image
+                    src="/img_about/about1.jpeg"
+                    alt="Tentang Kostascope"
+                    fill
+                    priority
+                    className="object-cover"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                  />
+                </div>
               </div>
 
-              <div className="absolute -bottom-8 left-8 rounded-2xl border border-red-100 bg-white p-5 shadow-xl">
+              <div className="absolute -bottom-8 left-8 rounded-2xl border border-red-100 bg-white p-3 md:p-5 shadow-xl">
                 <p className="text-sm font-semibold text-zinc-500">
                   Dikelola oleh
                 </p>
                 <p className="mt-1 font-black text-[#BE1E2D]">
-                  Ormawa Eksekutif PKU IPB
+                  Ristek Ormawa Eksekutif PKU IPB
                 </p>
               </div>
             </div>
           </div>
         </section>
 
-        <section className="bg-white py-20">
+        {/* <section className="bg-white py-20">
           <div className="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-[0.8fr_1.2fr] lg:px-8">
             <div>
               <p className="border-l-4 border-[#BE1E2D] pl-4 text-2xl font-black text-[#BE1E2D]">
@@ -114,7 +122,7 @@ export default function AboutPage() {
               </p>
             </div>
           </div>
-        </section>
+        </section> */}
 
         <section className="bg-[#F4F6FF] py-20">
           <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
@@ -147,12 +155,20 @@ export default function AboutPage() {
         <section className="bg-white py-20">
           <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
             <div className="overflow-hidden rounded-3xl border border-red-100 bg-white p-3 shadow-xl shadow-red-950/5">
-              <div className="aspect-4/3 rounded-2xl bg-linear-to-br from-zinc-100 via-white to-[#BE1E2D]/10" />
+              <div className="relative aspect-4/3 overflow-hidden rounded-2xl bg-zinc-100">
+                <Image
+                  src="/img_about/about2.jpg"
+                  alt="Kostascope untuk mahasiswa"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                />
+              </div>
             </div>
 
             <div>
               <h2 className="text-3xl font-black tracking-tight">
-                Dibangun untuk Mahasiswa
+                Membantu Maba Menentukan Pilihan Hunian
               </h2>
               <p className="mt-5 text-base leading-8 text-zinc-600">
                 Setiap fitur dirancang untuk mengurangi kebingungan dalam
@@ -179,7 +195,7 @@ export default function AboutPage() {
           </div>
         </section>
 
-        <section className="bg-white px-4 pb-20 sm:px-6 lg:px-8">
+        {/* <section className="bg-white px-4 pb-20 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-7xl overflow-hidden rounded-[2rem] bg-[#BE1E2D] px-6 py-14 text-center text-white shadow-2xl shadow-red-950/20">
             <p className="mx-auto mb-4 inline-flex rounded-lg border border-white/20 bg-white/10 px-5 py-2 text-sm font-semibold">
               Ormawa Eksekutif PKU IPB
@@ -193,15 +209,14 @@ export default function AboutPage() {
               profesional.
             </p>
           </div>
-        </section>
+        </section> */}
 
         <section className="bg-[#FAFAFC] px-4 py-20 text-center sm:px-6 lg:px-8">
           <h2 className="text-3xl font-black tracking-tight">
             Siap Menemukan Hunianmu?
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-zinc-600">
-            Mulai eksplorasi katalog kost kami yang telah dikurasi dan temukan
-            kenyamanan terbaik selama masa studium.
+            Mulai eksplorasi katalog kost yang telah kami sediakan.
           </p>
 
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">

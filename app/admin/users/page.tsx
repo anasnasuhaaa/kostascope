@@ -3,6 +3,7 @@ import { deleteUserAction } from "@/features/user/actions";
 import UserModal from "@/features/user/user-modal";
 import { requireSuperAdmin } from "@/lib/authorization";
 import { prisma } from "@/lib/prisma";
+export const dynamic = "force-dynamic";
 
 function formatRole(role: string) {
   if (role === "SUPER_ADMIN") {

@@ -11,8 +11,17 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Kostascope",
-  description: "Aplikasi informasi kost",
+  title: {
+    default: "Kostascope",
+    template: "%s - Kostascope",
+  },
+  description:
+    "Platform informasi kost untuk membantu mahasiswa menemukan hunian yang sesuai di sekitar IPB.",
+  icons: {
+    icon: "/kostalogo.png",
+    shortcut: "/kostalogo.png",
+    apple: "/kostalogo.png",
+  },
 };
 
 export default function RootLayout({

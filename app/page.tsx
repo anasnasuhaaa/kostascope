@@ -4,6 +4,7 @@ import Link from "next/link";
 import SiteFooter from "@/components/site-footer";
 import SiteHeader from "@/components/site-header";
 import { prisma } from "@/lib/prisma";
+export const dynamic = "force-dynamic";
 
 const needs = [
   "Dekat kampus",
@@ -196,7 +197,7 @@ function HouseVector() {
 
       <div className="absolute -bottom-6 left-4 hidden rounded-2xl border border-red-100 bg-white p-4 shadow-xl shadow-red-950/10 sm:block">
         <p className="text-xs font-semibold text-zinc-500">Dikelola Oleh</p>
-        <p className="text-md font-black text-[#BE1E2D]">Biro Riset & Teknologi Ormawa Eksekutif PKU IPB</p>
+        <p className="text-md font-black text-[#BE1E2D]">Ormawa Eksekutif PKU IPB</p>
       </div>
     </div>
   );
@@ -374,8 +375,7 @@ export default async function HomePage() {
               </h1>
 
               <p className="mx-auto mt-6 max-w-xl text-base leading-8 text-zinc-600 lg:mx-0">
-                Eksplorasi hunian eksklusif dan nyaman dengan data terstruktur
-                untuk mendukung perjalanan akademis Anda di Bogor.
+                Akses informasi kost yang lebih mudah, rapi, dan relevan dengan kebutuhan kamu di IPB.
               </p>
 
               <form
@@ -451,8 +451,7 @@ export default async function HomePage() {
 
 
                   <p className="mt-4 max-w-2xl text-sm leading-7 text-zinc-600 sm:text-base">
-                    Pilihan kost yang kami tampilkan khusus agar lebih mudah ditemukan
-                    oleh mahasiswa yang sedang mencari hunian nyaman di sekitar IPB.
+                    Pilihan Kost terbaik untuk kamu yang menginginkan kenyamanan, keamanan, dan akses mudah ke kampus IPB Dramaga.
                   </p>
                 </div>
                 {/* 
@@ -597,9 +596,7 @@ export default async function HomePage() {
               </h2>
               <p className="mt-6 max-w-xl text-base leading-8 text-zinc-600">
                 Kami memahami bahwa tempat tinggal adalah pondasi kenyamanan
-                belajar. Kostascope hadir untuk memangkas kebingungan mahasiswa
-                dengan navigasi yang intuitif dan kurasi hunian terbaik di
-                sekitar kampus IPB.
+                belajar. Kostascope hadir untuk menjawab kebingungan Maba!
               </p>
 
               <div className="mt-6 space-y-3 text-sm font-semibold text-zinc-700">
@@ -616,7 +613,7 @@ export default async function HomePage() {
               Cari Berdasarkan Kebutuhan
             </h2>
             <p className="mt-3 text-sm text-zinc-600">
-              Pilih kategori yang paling sesuai dengan prioritas harian Anda.
+              Pilih kategori yang paling sesuai dengan prioritas harian Kamu.
             </p>
 
             <div className="mt-8 flex flex-wrap justify-center gap-3">
@@ -641,7 +638,7 @@ export default async function HomePage() {
               </h2>
               <p className="mt-3 text-sm leading-6 text-zinc-600">
                 Bogor memiliki beragam area strategis. Tentukan yang paling
-                dekat dengan aktivitas Anda.
+                dekat dengan aktivitas Kamu.
               </p>
             </div>
 
@@ -706,7 +703,7 @@ export default async function HomePage() {
         <section className="bg-white px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
           <div className="mx-auto max-w-7xl overflow-hidden rounded-[2rem] bg-[#BE1E2D] px-6 py-14 text-center text-white shadow-2xl shadow-red-950/20 sm:px-10 sm:py-16">
             <h2 className="mx-auto max-w-2xl text-3xl font-black tracking-tight sm:text-5xl">
-              Siap Menemukan Rumah Kedua Anda?
+              Siap Menemukan Rumah Kedua Kamu?
             </h2>
             <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-white/80">
               Mulai pencarian sekarang dan nikmati masa kuliah dengan hunian

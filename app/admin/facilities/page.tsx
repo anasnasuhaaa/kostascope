@@ -2,6 +2,7 @@ import DeleteConfirmDialog from "@/components/delete-confirm-dialog";
 import FacilityModal from "@/features/facility/facility-modal";
 import { deleteFacilityAction } from "@/features/facility/actions";
 import { prisma } from "@/lib/prisma";
+export const dynamic = "force-dynamic";
 
 export default async function AdminFacilitiesPage() {
   const facilities = await prisma.facility.findMany({

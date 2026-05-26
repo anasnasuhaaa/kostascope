@@ -4,6 +4,7 @@ import Link from "next/link";
 import SiteFooter from "@/components/site-footer";
 import SiteHeader from "@/components/site-header";
 import { prisma } from "@/lib/prisma";
+export const dynamic = "force-dynamic";
 
 type KostPageProps = {
   searchParams?: Promise<{

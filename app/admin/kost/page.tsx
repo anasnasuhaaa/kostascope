@@ -5,6 +5,7 @@ import { deleteKostAction } from "@/features/kost/actions";
 import KostModal from "@/features/kost/kost-modal";
 import ImageManagerModal from "@/features/kost-image/image-manager-modal";
 import { prisma } from "@/lib/prisma";
+export const dynamic = "force-dynamic";
 
 function formatRupiah(value: number) {
   return `Rp${value.toLocaleString("id-ID")}`;
