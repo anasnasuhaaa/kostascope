@@ -479,6 +479,7 @@ export default async function HomePage() {
                           <Image
                             src={image.url}
                             alt={image.altText ?? kost.name}
+                            unoptimized
                             fill
                             className="object-cover transition duration-700 group-hover:scale-105"
                             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 20vw"

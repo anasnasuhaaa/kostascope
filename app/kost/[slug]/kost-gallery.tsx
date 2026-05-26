@@ -49,6 +49,7 @@ export default function KostGallery({ kostName, images }: KostGalleryProps) {
             <Image
               src={mainImage.url}
               alt={mainImage.altText ?? kostName}
+              unoptimized
               fill
               priority
               className="object-cover transition duration-500 group-hover:scale-105"
@@ -70,6 +71,7 @@ export default function KostGallery({ kostName, images }: KostGalleryProps) {
                 <Image
                   src={image.url}
                   alt={image.altText ?? kostName}
+                  unoptimized
                   fill
                   className="object-cover transition duration-500 group-hover:scale-105"
                   sizes="300px"
@@ -107,6 +109,7 @@ export default function KostGallery({ kostName, images }: KostGalleryProps) {
                 <Image
                   src={selectedImage.url}
                   alt={selectedImage.altText ?? kostName}
+                  unoptimized
                   fill
                   className="object-contain"
                   sizes="100vw"

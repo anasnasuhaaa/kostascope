@@ -134,6 +134,7 @@ export default function ImageManagerModal({ kost }: ImageManagerModalProps) {
                       <Image
                         src={image.url}
                         alt={image.altText ?? kost.name}
+                        unoptimized
                         fill
                         className="object-cover"
                         sizes="(max-width: 640px) 100vw, 33vw"

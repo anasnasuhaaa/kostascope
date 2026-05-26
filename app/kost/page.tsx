@@ -569,6 +569,7 @@ export default async function KostPage({ searchParams }: KostPageProps) {
                           <Image
                             src={mainImage.url}
                             alt={mainImage.altText ?? kost.name}
+                            unoptimized
                             fill
                             className="object-cover transition duration-500 group-hover:scale-105"
                             sizes="(max-width: 640px) 50vw, (max-width: 1280px) 33vw, 25vw"
