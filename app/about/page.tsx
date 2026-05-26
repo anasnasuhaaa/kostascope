@@ -65,7 +65,7 @@ export default function AboutPage() {
                 Tentang <span className="text-[#BE1E2D]">AngkasaKost</span>
               </h1>
               <p className="mt-6 max-w-xl text-base leading-8 text-zinc-600">
-                AngkasaKost hadir sebagai program kerja Biro Riset dan Teknologi Ormawa Eksekutif PKU untuk membantu mahasiswa baru IPB mengenal berbagai pilihan kost di sekitar Kampus IPB Dramaga. Dengan informasi yang disusun secara rapi dan mudah dipahami, Kostascope diharapkan dapat mempermudah proses pencarian hunian bagi mahasiswa baru.
+                AngkasaKost hadir sebagai program kerja Biro Riset dan Teknologi Ormawa Eksekutif PKU untuk membantu mahasiswa baru IPB mengenal berbagai pilihan kost di sekitar Kampus IPB Dramaga. Dengan informasi yang disusun secara rapi dan mudah dipahami, AngkasaKost diharapkan dapat mempermudah proses pencarian hunian bagi mahasiswa baru.
               </p>
             </div>
 
