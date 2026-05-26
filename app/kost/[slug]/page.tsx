@@ -86,7 +86,7 @@ function getLowestPriceItem(
 function buildWhatsappUrl(phone: string, kostName: string) {
   const cleanPhone = phone.replace(/\D/g, "");
   const message = encodeURIComponent(
-    `Halo, saya tertarik dengan informasi ${kostName} yang saya lihat di Kostascope.`
+    `Halo kak, aku tertarik dengan informasi ${kostName} yang aku lihat di AngkasaKost.`
   );
 
   return `https://wa.me/${cleanPhone}?text=${message}`;

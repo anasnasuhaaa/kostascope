@@ -8,9 +8,9 @@ export const dynamic = "force-dynamic";
 
 const needs = [
   "Dekat kampus",
-  "Harga bulanan",
+  "Harga bulanan dan tahunan",
   "Fasilitas lengkap",
-  "Kost putra / putri / campur",
+  "Kost putra / putri",
   "AC",
   "Wifi",
 ];
@@ -487,7 +487,7 @@ export default async function HomePage() {
                         ) : (
                           <div className="flex h-full w-full items-center justify-center">
                             <span className="rounded-xl bg-white px-4 py-2 text-xs font-black text-[#BE1E2D] shadow-sm">
-                              Kostascope
+                              Angkasa Kost
                             </span>
                           </div>
                         )}
@@ -597,7 +597,7 @@ export default async function HomePage() {
               </h2>
               <p className="mt-6 max-w-xl text-base leading-8 text-zinc-600">
                 Kami memahami bahwa tempat tinggal adalah pondasi kenyamanan
-                belajar. Kostascope hadir untuk menjawab kebingungan Maba!
+                belajar. AngkasaKost hadir untuk menjawab kebingungan Maba!
               </p>
 
               <div className="mt-6 space-y-3 text-sm font-semibold text-zinc-700">

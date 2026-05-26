@@ -39,7 +39,7 @@ export default function SiteHeader() {
             priority
             className="h-9 w-9 rounded-lg object-contain"
           />
-          <span>Kostascope</span>
+          <span>AngkasaKost</span>
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">

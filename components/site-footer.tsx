@@ -6,7 +6,7 @@ export default function SiteFooter() {
       <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-8 text-center sm:px-6 md:flex-row md:items-center md:justify-between md:text-left lg:px-8">
         <div>
           <h2 className="text-xl font-extrabold text-[#BE1E2D]">
-            Kostascope
+            AngkasaKost
           </h2>
 
           <p className="mt-2 max-w-md text-sm leading-6 text-zinc-600">

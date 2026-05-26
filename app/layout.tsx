@@ -12,8 +12,8 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: "Kostascope",
-    template: "%s - Kostascope",
+    default: "AngkasaKost",
+    template: "%s - AngkasaKost",
   },
   description:
     "Platform informasi kost untuk membantu mahasiswa menemukan hunian yang sesuai di sekitar IPB.",

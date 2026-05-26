@@ -22,7 +22,7 @@ function LoginIllustration() {
 
           <p className="mt-5 max-w-md text-sm leading-7 text-white/75">
             Masuk untuk mengelola informasi kost, wilayah, fasilitas, harga,
-            foto, dan status publikasi Kostascope.
+            foto, dan status publikasi AngkasaKost.
           </p>
         </div>
 
@@ -31,7 +31,7 @@ function LoginIllustration() {
             <div className="mb-4 flex items-center justify-between">
               <div>
                 <p className="text-xs text-white/60">Dashboard Preview</p>
-                <p className="font-bold">Kostascope Admin</p>
+                <p className="font-bold">AngkasaKost Admin</p>
               </div>
               <div className="h-10 w-10 rounded-xl bg-white/20" />
             </div>
@@ -88,7 +88,7 @@ export default function LoginForm() {
               href="/"
               className="inline-flex text-2xl font-black tracking-tight text-[#BE1E2D]"
             >
-              Kostascope
+              AngkasaKost
             </Link>
 
             <h1 className="mt-6 text-3xl font-black tracking-tight sm:text-4xl">
@@ -96,7 +96,7 @@ export default function LoginForm() {
             </h1>
 
             <p className="mt-3 text-sm leading-6 text-zinc-500">
-              Masuk untuk mengelola data Kostascope.
+              Masuk untuk mengelola data AngkasaKost.
             </p>
           </div>
 
@@ -151,7 +151,7 @@ export default function LoginForm() {
             </div>
 
             <div className="mt-5 rounded-2xl bg-[#FFF7F8] px-4 py-3 text-center text-xs leading-5 text-zinc-500">
-              Halaman ini hanya untuk pengelola Kostascope.
+              Halaman ini hanya untuk pengelola AngkasaKost.
             </div>
           </form>
 

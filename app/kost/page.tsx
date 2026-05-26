@@ -577,7 +577,7 @@ export default async function KostPage({ searchParams }: KostPageProps) {
                         ) : (
                           <div className="flex h-full items-center justify-center">
                             <div className="rounded-xl bg-white/80 px-3 py-2 text-[10px] font-black text-[#BE1E2D] lg:text-sm">
-                              Kostascope
+                              AngkasaKost
                             </div>
                           </div>
                         )}

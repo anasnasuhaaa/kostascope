@@ -62,10 +62,10 @@ export default function AboutPage() {
                 Visi & Misi Kami
               </div> */}
               <h1 className="text-4xl font-black tracking-tight sm:text-5xl">
-                Tentang <span className="text-[#BE1E2D]">Kostascope</span>
+                Tentang <span className="text-[#BE1E2D]">AngkasaKost</span>
               </h1>
               <p className="mt-6 max-w-xl text-base leading-8 text-zinc-600">
-                Kostascope hadir sebagai program kerja Biro Riset dan Teknologi Ormawa Eksekutif PKU untuk membantu mahasiswa baru IPB mengenal berbagai pilihan kost di sekitar Kampus IPB Dramaga. Dengan informasi yang disusun secara rapi dan mudah dipahami, Kostascope diharapkan dapat mempermudah proses pencarian hunian bagi mahasiswa baru.
+                AngkasaKost hadir sebagai program kerja Biro Riset dan Teknologi Ormawa Eksekutif PKU untuk membantu mahasiswa baru IPB mengenal berbagai pilihan kost di sekitar Kampus IPB Dramaga. Dengan informasi yang disusun secara rapi dan mudah dipahami, Kostascope diharapkan dapat mempermudah proses pencarian hunian bagi mahasiswa baru.
               </p>
             </div>
 
@@ -74,7 +74,7 @@ export default function AboutPage() {
                 <div className="relative aspect-4/3 overflow-hidden rounded-2xl bg-red-50">
                   <Image
                     src="/img_about/about1.jpeg"
-                    alt="Tentang Kostascope"
+                    alt="Tentang AngkasaKost"
                     fill
                     priority
                     className="object-cover"
