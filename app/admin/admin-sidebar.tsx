@@ -4,7 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 
-export const adminMenus = [
+type AdminRole = "ADMIN" | "SUPER_ADMIN";
+
+const adminMenus = [
   {
     label: "Dashboard",
     href: "/admin",
@@ -23,16 +25,34 @@ export const adminMenus = [
   },
 ];
 
+const superAdminMenus = [
+  {
+    label: "User",
+    href: "/admin/users",
+  },
+];
+
+function getVisibleMenus(role?: AdminRole) {
+  if (role === "SUPER_ADMIN") {
+    return [...adminMenus, ...superAdminMenus];
+  }
+
+  return adminMenus;
+}
+
 export function AdminMenuList({
+  role,
   onNavigate,
 }: {
+  role?: AdminRole;
   onNavigate?: () => void;
 }) {
   const pathname = usePathname();
+  const visibleMenus = getVisibleMenus(role);
 
   return (
     <nav className="space-y-1">
-      {adminMenus.map((menu) => {
+      {visibleMenus.map((menu) => {
         const isActive =
           menu.href === "/admin"
             ? pathname === "/admin"
@@ -70,26 +90,51 @@ export function AdminLogoutButton() {
   );
 }
 
+function getRoleLabel(role?: AdminRole) {
+  if (role === "SUPER_ADMIN") {
+    return "Super Admin";
+  }
+
+  return "Admin";
+}
+
+function getRoleClassName(role?: AdminRole) {
+  if (role === "SUPER_ADMIN") {
+    return "bg-red-50 text-[#BE1E2D] ring-red-100";
+  }
+
+  return "bg-blue-50 text-blue-700 ring-blue-100";
+}
+
 export default function AdminSidebar({
   email,
+  role,
 }: {
   email?: string | null;
+  role?: AdminRole;
 }) {
   return (
     <aside className="fixed left-0 top-0 z-40 hidden h-screen w-64 flex-col border-r bg-background lg:flex">
       <div className="border-b px-6 py-5">
         <h1 className="text-lg font-bold">Kostascope</h1>
-        <p className="mt-1 text-xs text-muted-foreground">Admin Panel</p>
+        {/* <p className="mt-1 text-xs text-muted-foreground">Admin Panel</p> */}
+
+        <span
+          className={[
+            "mt-1 inline-flex rounded-full px-2 py-1 text-[10px] font-bold ring-1",
+            getRoleClassName(role),
+          ].join(" ")}
+        >
+          {getRoleLabel(role)}
+        </span>
       </div>
 
       <div className="flex-1 px-3 py-4">
-        <AdminMenuList />
+        <AdminMenuList role={role} />
       </div>
 
       <div className="border-t p-4">
-        <p className="mb-3 truncate text-xs text-muted-foreground">
-          {email}
-        </p>
+        <p className="mb-3 truncate text-xs text-muted-foreground">{email}</p>
 
         <AdminLogoutButton />
       </div>

@@ -429,7 +429,7 @@ export default function KostModal({
                 defaultChecked={kost?.isFeatured ?? false}
               />
               <span className="text-sm font-medium">
-                Tampilkan sebagai kost unggulan
+                Tampilkan sebagai kost rekomendasi
               </span>
             </label>
           </section>

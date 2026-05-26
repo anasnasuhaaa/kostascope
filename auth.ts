@@ -6,6 +6,16 @@ import { z } from "zod";
 
 import { prisma } from "@/lib/prisma";
 
+type AdminRole = "ADMIN" | "SUPER_ADMIN";
+
+function normalizeRole(role: unknown): AdminRole {
+  if (role === "SUPER_ADMIN") {
+    return "SUPER_ADMIN";
+  }
+
+  return "ADMIN";
+}
+
 const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
@@ -61,7 +71,7 @@ export const authOptions: NextAuthOptions = {
           id: user.id,
           name: user.name,
           email: user.email,
-          role: user.role,
+          role: normalizeRole(user.role),
         };
       },
     }),
@@ -69,7 +79,8 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = user.role;
+        token.id = user.id;
+        token.role = normalizeRole(user.role);
       }
 
       return token;
@@ -77,8 +88,8 @@ export const authOptions: NextAuthOptions = {
 
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.sub ?? "";
-        session.user.role = token.role as string;
+        session.user.id = String(token.id ?? token.sub ?? "");
+        session.user.role = normalizeRole(token.role);
       }
 
       return session;
