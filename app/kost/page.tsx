@@ -48,6 +48,10 @@ function getPriceLabel(type: string) {
     return "1 Bulan";
   }
 
+  if (type === "THREE_MONTHS") {
+    return "3 Bulan";
+  }
+
   if (type === "SIX_MONTHS") {
     return "6 Bulan";
   }
