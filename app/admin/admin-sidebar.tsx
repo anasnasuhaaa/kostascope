@@ -113,7 +113,7 @@ export default function AdminSidebar({
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupContent>
+          <SidebarGroupContent className="py-2">
             <SidebarMenu>
               {visibleMenus.map((menu) => {
                 const Icon = menu.icon;

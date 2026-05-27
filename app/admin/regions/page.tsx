@@ -22,7 +22,10 @@ export default async function AdminRegionsPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h2 className="text-2xl font-bold">Kelola Wilayah</h2>
+          <h2 className="text-2xl font-bold">Wilayah</h2>
+          <p className="text-sm text-muted-foreground">
+            Kelola daftar wilayah kost seperti Bara, Bateng, Perwira, dan lainnya.
+          </p>
         </div>
 
         <RegionModal mode="create" />
@@ -42,7 +45,7 @@ export default async function AdminRegionsPage() {
           <tbody>
             {regions.map((region, index) => (
               <tr key={region.id} className="border-t">
-                <td className="px-4 py-3 font-medium">{index +1}</td>
+                <td className="px-4 py-3 font-medium">{index + 1}</td>
                 <td className="px-4 py-3 font-medium">{region.name}</td>
                 <td className="px-4 py-3 text-center">{region._count.kosts}</td>
                 <td className="px-4 py-3">
