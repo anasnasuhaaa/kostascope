@@ -73,7 +73,7 @@ export default function AboutPage() {
               <div className="overflow-hidden rounded-3xl bg-[#4A0D16] p-3 shadow-2xl shadow-red-950/20">
                 <div className="relative aspect-4/3 overflow-hidden rounded-2xl bg-red-50">
                   <Image
-                    src="/img_about/about1.jpeg"
+                    src="/img_about/about3.jpeg"
                     alt="Tentang AngkasaKost"
                     fill
                     priority
@@ -88,7 +88,7 @@ export default function AboutPage() {
                   Dikelola oleh
                 </p>
                 <p className="mt-1 font-black text-[#BE1E2D]">
-                  Ristek Ormawa Eksekutif PKU IPB
+                  Biro Riset dan Teknologi, Ormawa Eksekutif PKU IPB
                 </p>
               </div>
             </div>

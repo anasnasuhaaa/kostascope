@@ -197,7 +197,7 @@ function HouseVector() {
 
       <div className="absolute -bottom-6 left-4 hidden rounded-2xl border border-red-100 bg-white p-4 shadow-xl shadow-red-950/10 sm:block">
         <p className="text-xs font-semibold text-zinc-500">Dikelola Oleh</p>
-        <p className="text-md font-black text-[#BE1E2D]">Ormawa Eksekutif PKU IPB</p>
+        <p className="text-md font-black text-[#BE1E2D]">Biro Riset dan Teknologi, Ormawa Eksekutif PKU IPB</p>
       </div>
     </div>
   );

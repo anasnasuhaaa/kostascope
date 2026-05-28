@@ -30,7 +30,7 @@ export default function KostGallery({ kostName, images }: KostGalleryProps) {
       <div className="overflow-hidden rounded-3xl border border-red-100 bg-white p-3 shadow-sm">
         <div className="flex aspect-video items-center justify-center rounded-2xl bg-linear-to-br from-red-50 to-zinc-100">
           <div className="rounded-2xl bg-white px-6 py-4 text-lg font-black text-[#BE1E2D] shadow-sm">
-            Kostascope
+            AngkasaKost
           </div>
         </div>
       </div>
@@ -83,7 +83,7 @@ export default function KostGallery({ kostName, images }: KostGalleryProps) {
 
             {images.length === 1 && (
               <div className="flex aspect-video items-center justify-center rounded-2xl bg-red-50 text-sm font-bold text-[#BE1E2D]">
-                Kostascope
+                AngkasaKost
               </div>
             )}
           </div>
