@@ -1,9 +1,13 @@
 import Link from "next/link";
 import {
+  AlertTriangle,
+  Camera,
+  CircleDollarSign,
+  MapPinned,
+  ShieldCheck,
   ArrowRight,
   BadgeCheck,
   BedDouble,
-  Building2,
   CheckCircle2,
   Clock3,
   DraftingCompass,
@@ -13,6 +17,8 @@ import {
   Plus,
   Sparkles,
   Tags,
+  Trophy,
+  UserRound,
 } from "lucide-react";
 
 import { prisma } from "@/lib/prisma";
@@ -82,12 +88,37 @@ function getStatusClassName(status: string) {
   return "bg-yellow-50 text-yellow-700 ring-yellow-100";
 }
 
-function formatDate(value: Date) {
+function formatDateTime(value: Date) {
   return new Intl.DateTimeFormat("id-ID", {
     day: "2-digit",
     month: "short",
     year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
   }).format(value);
+}
+
+function getAdminDisplayName(admin: {
+  name: string | null;
+  email: string;
+}) {
+  return admin.name ?? admin.email;
+}
+
+function getRankClassName(index: number) {
+  if (index === 0) {
+    return "bg-yellow-100 text-yellow-700 ring-yellow-200";
+  }
+
+  if (index === 1) {
+    return "bg-zinc-200 text-zinc-700 ring-zinc-300";
+  }
+
+  if (index === 2) {
+    return "bg-orange-100 text-orange-700 ring-orange-200";
+  }
+
+  return "bg-red-50 text-[#BE1E2D] ring-red-100";
 }
 
 function StatCard({
@@ -137,6 +168,107 @@ function StatCard({
   );
 }
 
+function LeaderboardItem({
+  admin,
+  index,
+}: {
+  admin: {
+    id: string;
+    name: string | null;
+    email: string;
+    role: string;
+    _count: {
+      createdKosts: number;
+    };
+  };
+  index: number;
+}) {
+  return (
+    <div className="flex items-center gap-3 rounded-2xl border bg-muted/20 p-3 transition hover:bg-muted/40">
+      <div
+        className={[
+          "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-sm font-black ring-1",
+          getRankClassName(index),
+        ].join(" ")}
+      >
+        #{index + 1}
+      </div>
+
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm font-bold">
+          {getAdminDisplayName(admin)}
+        </p>
+
+        <p className="text-xs text-muted-foreground">
+          {admin.role === "SUPER_ADMIN" ? "Super Admin" : "Admin"}
+        </p>
+      </div>
+
+      <div className="text-right">
+        <p className="text-lg font-black text-[#BE1E2D]">
+          {admin._count.createdKosts}
+        </p>
+        <p className="text-[10px] font-medium text-muted-foreground">kost</p>
+      </div>
+    </div>
+  );
+}
+function DataHealthCard({
+  title,
+  value,
+  description,
+  icon: Icon,
+  href,
+  tone = "red",
+}: {
+  title: string;
+  value: number;
+  description: string;
+  icon: React.ElementType;
+  href: string;
+  tone?: "red" | "yellow" | "blue" | "green";
+}) {
+  const toneClassName = {
+    red: "bg-red-50 text-[#BE1E2D] ring-red-100",
+    yellow: "bg-yellow-50 text-yellow-700 ring-yellow-100",
+    blue: "bg-blue-50 text-blue-700 ring-blue-100",
+    green: "bg-green-50 text-green-700 ring-green-100",
+  }[tone];
+
+  return (
+    <Link
+      href={href}
+      className="group rounded-2xl border bg-background p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg hover:shadow-zinc-950/5"
+    >
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <p className="text-sm font-bold">{title}</p>
+          <p className="mt-1 text-xs leading-5 text-muted-foreground">
+            {description}
+          </p>
+        </div>
+
+        <div
+          className={[
+            "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ring-1",
+            toneClassName,
+          ].join(" ")}
+        >
+          <Icon className="h-5 w-5" />
+        </div>
+      </div>
+
+      <div className="mt-4 flex items-end justify-between gap-3">
+        <p className="text-3xl font-black tracking-tight">{value}</p>
+
+        <span className="inline-flex items-center gap-1 text-xs font-bold text-[#BE1E2D] transition group-hover:translate-x-0.5">
+          Cek
+          <ArrowRight className="h-3.5 w-3.5" />
+        </span>
+      </div>
+    </Link>
+  );
+}
 export default async function AdminDashboardPage() {
   const [
     kostCount,
@@ -149,6 +281,10 @@ export default async function AdminDashboardPage() {
     imageCount,
     recentKosts,
     topRegions,
+    adminLeaderboard,
+    kostWithoutImageCount,
+    kostWithoutPriceCount,
+    kostWithoutMapCount,
   ] = await Promise.all([
     prisma.kost.count(),
 
@@ -185,6 +321,12 @@ export default async function AdminDashboardPage() {
     prisma.kost.findMany({
       include: {
         region: true,
+        createdBy: {
+          select: {
+            name: true,
+            email: true,
+          },
+        },
         prices: {
           orderBy: {
             type: "asc",
@@ -218,6 +360,55 @@ export default async function AdminDashboardPage() {
       },
       take: 5,
     }),
+
+    prisma.user.findMany({
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        _count: {
+          select: {
+            createdKosts: true,
+          },
+        },
+      },
+      orderBy: {
+        createdKosts: {
+          _count: "desc",
+        },
+      },
+    }),
+
+    prisma.kost.count({
+      where: {
+        images: {
+          none: {},
+        },
+      },
+    }),
+
+    prisma.kost.count({
+      where: {
+        prices: {
+          none: {},
+        },
+      },
+    }),
+
+    prisma.kost.count({
+      where: {
+        OR: [
+          {
+            googleMapsUrl: null,
+          },
+          {
+            googleMapsUrl: "",
+          },
+        ],
+      },
+    }),
+
   ]);
 
   const publicationRate =
@@ -225,6 +416,9 @@ export default async function AdminDashboardPage() {
 
   const draftRate =
     kostCount > 0 ? Math.round((draftKostCount / kostCount) * 100) : 0;
+
+  const topFiveAdmins = adminLeaderboard.slice(0, 5);
+  const remainingAdmins = adminLeaderboard.slice(5);
 
   return (
     <div className="space-y-8">
@@ -245,7 +439,7 @@ export default async function AdminDashboardPage() {
 
             <p className="mt-4 max-w-xl text-sm leading-7 text-white/70 sm:text-base">
               Pantau ringkasan data kost, status publikasi, wilayah, fasilitas,
-              dan aktivitas terbaru dalam satu halaman.
+              kontribusi admin, dan aktivitas terbaru dalam satu halaman.
             </p>
           </div>
 
@@ -378,90 +572,204 @@ export default async function AdminDashboardPage() {
       </section>
 
       <section className="grid gap-6 xl:grid-cols-[1.45fr_0.85fr]">
-        <div className="overflow-hidden rounded-2xl border bg-background shadow-sm">
-          <div className="flex items-center justify-between gap-4 border-b p-5">
-            <div>
-              <h2 className="font-bold">Kost Terbaru</h2>
-              <p className="text-xs text-muted-foreground">
-                Data kost terakhir yang ditambahkan atau diperbarui.
-              </p>
-            </div>
-
-            <Link
-              href="/admin/kost"
-              className="inline-flex items-center gap-1 text-xs font-bold text-[#BE1E2D] hover:underline"
-            >
-              Lihat semua
-              <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
-          </div>
-
-          <div className="divide-y">
-            {recentKosts.map((kost) => {
-              const image = kost.images[0];
-              const price = getLowestPrice(kost.prices);
-
-              return (
-                <Link
-                  key={kost.id}
-                  href={`/admin/kost/${kost.id}/edit`}
-                  className="flex items-center gap-4 p-4 transition hover:bg-muted/40"
-                >
-                  <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-red-50 text-[#BE1E2D]">
-                    {image ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={image.url}
-                        alt={image.altText ?? kost.name}
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <BedDouble className="h-6 w-6" />
-                    )}
+        <div className="space-y-6">
+          <div className="rounded-2xl border bg-background p-5 shadow-sm">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <div className="flex items-center gap-2">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-red-50 text-[#BE1E2D] ring-1 ring-red-100">
+                    <ShieldCheck className="h-4 w-4" />
                   </div>
 
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h3 className="truncate text-sm font-bold">
-                        {kost.name}
-                      </h3>
-
-                      <span
-                        className={[
-                          "rounded-full px-2 py-0.5 text-[10px] font-bold ring-1",
-                          getStatusClassName(kost.status),
-                        ].join(" ")}
-                      >
-                        {formatStatus(kost.status)}
-                      </span>
-                    </div>
-
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      {kost.region.name} •{" "}
-                      {price
-                        ? `${formatRupiah(price.price)} / ${getPriceLabel(
-                          price.type
-                        )}`
-                        : "Harga belum tersedia"}
+                  <div>
+                    <h2 className="font-bold">Kelengkapan Data Kost</h2>
+                    <p className="text-xs text-muted-foreground">
+                      Pantau kelengkapan data penting sebelum ditampilkan ke pengguna.
                     </p>
                   </div>
-
-                  <div className="hidden text-right text-xs text-muted-foreground sm:block">
-                    {formatDate(kost.createdAt)}
-                  </div>
-                </Link>
-              );
-            })}
-
-            {recentKosts.length === 0 && (
-              <div className="p-8 text-center text-sm text-muted-foreground">
-                Belum ada data kost.
+                </div>
               </div>
-            )}
+
+              <Link
+                href="/admin/kost"
+                className="inline-flex w-fit items-center gap-1 text-xs font-bold text-[#BE1E2D] hover:underline"
+              >
+                Kelola data
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+
+            <div className="mt-5 grid gap-4 sm:grid-cols-3">
+              <DataHealthCard
+                title="Tanpa Foto"
+                value={kostWithoutImageCount}
+                description="Data kost belum memiliki foto utama."
+                icon={Camera}
+                href="/admin/kost"
+                tone="red"
+              />
+
+              <DataHealthCard
+                title="Tanpa Harga"
+                value={kostWithoutPriceCount}
+                description="Data kost belum memiliki pilihan harga."
+                icon={CircleDollarSign}
+                href="/admin/kost"
+                tone="yellow"
+              />
+                <DataHealthCard
+                  title="Tanpa Maps"
+                  value={kostWithoutMapCount}
+                  description="Data kost belum memiliki link GMaps."
+                  icon={MapPinned}
+                  href="/admin/kost"
+                  tone="blue"
+                />
+            </div>
+
+          </div>
+          <div className="overflow-hidden rounded-2xl border bg-background shadow-sm">
+            <div className="flex items-center justify-between gap-4 border-b p-5">
+              <div>
+                <h2 className="font-bold">Kost Terbaru</h2>
+                <p className="text-xs text-muted-foreground">
+                  Data kost terakhir yang ditambahkan atau diperbarui.
+                </p>
+              </div>
+
+              <Link
+                href="/admin/kost"
+                className="inline-flex items-center gap-1 text-xs font-bold text-[#BE1E2D] hover:underline"
+              >
+                Lihat semua
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+
+            <div className="divide-y">
+              {recentKosts.map((kost) => {
+                const image = kost.images[0];
+                const price = getLowestPrice(kost.prices);
+
+                return (
+                  <Link
+                    key={kost.id}
+                    href={`/admin/kost/${kost.id}/edit`}
+                    className="flex items-center gap-4 p-4 transition hover:bg-muted/40"
+                  >
+                    <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-red-50 text-[#BE1E2D]">
+                      {image ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={image.url}
+                          alt={image.altText ?? kost.name}
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <BedDouble className="h-6 w-6" />
+                      )}
+                    </div>
+
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <h3 className="truncate text-sm font-bold">
+                          {kost.name}
+                        </h3>
+
+                        <span
+                          className={[
+                            "rounded-full px-2 py-0.5 text-[10px] font-bold ring-1",
+                            getStatusClassName(kost.status),
+                          ].join(" ")}
+                        >
+                          {formatStatus(kost.status)}
+                        </span>
+                      </div>
+
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        {kost.region.name} •{" "}
+                        {price
+                          ? `${formatRupiah(price.price)} / ${getPriceLabel(
+                            price.type
+                          )}`
+                          : "Harga belum tersedia"}
+                      </p>
+
+                      <p className="mt-1 flex flex-wrap items-center gap-1 text-xs text-muted-foreground">
+                        <UserRound className="h-3.5 w-3.5 text-[#BE1E2D]" />
+                        Ditambahkan oleh{" "}
+                        <span className="font-semibold text-foreground">
+                          {kost.createdBy?.name ??
+                            kost.createdBy?.email ??
+                            "Admin tidak diketahui"}
+                        </span>
+                      </p>
+                    </div>
+
+                    <div className="hidden min-w-28 text-right text-xs leading-5 text-muted-foreground sm:block">
+                      {formatDateTime(kost.createdAt)}
+                    </div>
+                  </Link>
+                );
+              })}
+
+              {recentKosts.length === 0 && (
+                <div className="p-8 text-center text-sm text-muted-foreground">
+                  Belum ada data kost.
+                </div>
+              )}
+            </div>
           </div>
         </div>
-
         <div className="space-y-6">
+          <div className="overflow-hidden rounded-2xl border bg-background shadow-sm">
+            <div className="flex items-start justify-between gap-4 border-b p-5">
+              <div>
+                <h2 className="font-bold">Leaderboard Admin</h2>
+                <p className="text-xs text-muted-foreground">
+                  Top 5 admin dengan kontribusi data kost terbanyak.
+                </p>
+              </div>
+
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-yellow-50 text-yellow-700 ring-1 ring-yellow-100">
+                <Trophy className="h-5 w-5" />
+              </div>
+            </div>
+
+            <div className="space-y-3 p-5">
+              {topFiveAdmins.map((admin, index) => (
+                <LeaderboardItem key={admin.id} admin={admin} index={index} />
+              ))}
+
+              {topFiveAdmins.length === 0 && (
+                <p className="text-sm text-muted-foreground">
+                  Belum ada data admin.
+                </p>
+              )}
+
+              {remainingAdmins.length > 0 && (
+                <details className="group rounded-2xl border bg-muted/20">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 text-sm font-bold text-[#BE1E2D]">
+                    Lihat admin lainnya
+                    <span className="text-xs text-muted-foreground transition group-open:rotate-180">
+                      ▼
+                    </span>
+                  </summary>
+
+                  <div className="space-y-3 border-t p-3">
+                    {remainingAdmins.map((admin, index) => (
+                      <LeaderboardItem
+                        key={admin.id}
+                        admin={admin}
+                        index={index + 5}
+                      />
+                    ))}
+                  </div>
+                </details>
+              )}
+            </div>
+          </div>
+
           <div className="rounded-2xl border bg-background p-5 shadow-sm">
             <div>
               <h2 className="font-bold">Distribusi Wilayah</h2>
@@ -513,7 +821,7 @@ export default async function AdminDashboardPage() {
               )}
             </div>
           </div>
-
+{/*  SARAN PENGELOLAAN
           <div className="rounded-2xl border bg-linear-to-br from-red-50 via-white to-white p-5 shadow-sm">
             <div className="flex gap-3">
               <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#BE1E2D] text-white">
@@ -537,7 +845,7 @@ export default async function AdminDashboardPage() {
                 </Link>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </section>
     </div>

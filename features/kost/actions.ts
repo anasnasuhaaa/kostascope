@@ -6,6 +6,7 @@ import { unlink } from "node:fs/promises";
 import path from "node:path";
 
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/auth";
 
 type ActionResult = {
   success: boolean;
@@ -212,6 +213,15 @@ export async function createKostAction(
 
   const slug = existingSlug ? `${baseSlug}-${Date.now()}` : baseSlug;
 
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    return {
+      success: false,
+      message: "Sesi admin tidak valid. Silakan login ulang.",
+    };
+  }
+
   await prisma.kost.create({
     data: {
       name: data.name,
@@ -227,6 +237,7 @@ export async function createKostAction(
       status: data.status,
       isFeatured: data.isFeatured,
       regionId: data.regionId,
+      createdById: session.user.id,
       prices: {
         create: buildPrices(data),
       },
