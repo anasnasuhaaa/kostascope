@@ -9,6 +9,7 @@ import {
   ListChecks,
   LogOut,
   MapPin,
+  UserCircle,
   PanelLeftClose,
   Users,
 } from "lucide-react";
@@ -49,6 +50,11 @@ const adminMenus = [
     label: "Fasilitas",
     href: "/admin/facilities",
     icon: ListChecks,
+  },
+  {
+    label: "Profile",
+    href: "/admin/profile",
+    icon: UserCircle,
   },
 ];
 
