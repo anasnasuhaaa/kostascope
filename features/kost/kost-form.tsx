@@ -1,16 +1,10 @@
 "use client";
 
+import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
-
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { createKostAction, updateKostAction } from "@/features/kost/actions";
-
-import type { LucideIcon } from "lucide-react";
 import {
   BedDouble,
   ClipboardList,
@@ -18,6 +12,11 @@ import {
   Sparkles,
   WalletCards,
 } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { createKostAction, updateKostAction } from "@/features/kost/actions";
 
 type RegionOption = {
   id: string;
@@ -57,6 +56,29 @@ type KostFormProps = {
     regionId: string;
     facilityIds: string[];
   };
+};
+
+type FormValues = {
+  name: string;
+  contactWhatsapp: string;
+  regionId: string;
+  genderType: "PUTRA" | "PUTRI" | "CAMPUR";
+  status: "DRAFT" | "PUBLISHED" | "ARCHIVED";
+
+  monthlyPrice: string;
+  threeMonthPrice: string;
+  sixMonthPrice: string;
+  yearlyPrice: string;
+
+  roomSize: string;
+  distanceToCampusInMeters: string;
+  waterFeeType: "INCLUDED" | "NOT_INCLUDED";
+  electricityType: "INCLUDED" | "TOKEN" | "SEPARATE";
+
+  googleMapsUrl: string;
+  description: string;
+  facilityIds: string[];
+  isFeatured: boolean;
 };
 
 function SectionTitle({
@@ -114,9 +136,89 @@ function FieldError({ errors }: { errors?: string[] }) {
 }
 
 function getInputClassName(hasError?: boolean) {
-  return [
-    hasError ? "border-red-500 focus-visible:ring-red-200" : "",
-  ].join(" ");
+  return hasError ? "border-red-500 focus-visible:ring-red-200" : "";
+}
+
+function sanitizeNumber(value: string) {
+  return value.replace(/\D/g, "");
+}
+
+function getInitialValues(kost?: KostFormProps["kost"]): FormValues {
+  return {
+    name: kost?.name ?? "",
+    contactWhatsapp: kost?.contactWhatsapp ?? "",
+    regionId: kost?.regionId ?? "",
+    genderType: kost?.genderType ?? "PUTRI",
+    status: kost?.status ?? "DRAFT",
+
+    monthlyPrice: kost?.monthlyPrice?.toString() ?? "",
+    threeMonthPrice: kost?.threeMonthPrice?.toString() ?? "",
+    sixMonthPrice: kost?.sixMonthPrice?.toString() ?? "",
+    yearlyPrice: kost?.yearlyPrice?.toString() ?? "",
+
+    roomSize: kost?.roomSize ?? "",
+    distanceToCampusInMeters: kost?.distanceToCampusInMeters?.toString() ?? "",
+    waterFeeType: kost?.waterFeeType ?? "INCLUDED",
+    electricityType: kost?.electricityType ?? "TOKEN",
+
+    googleMapsUrl: kost?.googleMapsUrl ?? "",
+    description: kost?.description ?? "",
+    facilityIds: kost?.facilityIds ?? [],
+    isFeatured: kost?.isFeatured ?? false,
+  };
+}
+
+function focusFirstError(errors: FieldErrors, formId: string) {
+  const fieldOrder = [
+    "name",
+    "contactWhatsapp",
+    "regionId",
+    "genderType",
+    "status",
+    "prices",
+    "monthlyPrice",
+    "threeMonthPrice",
+    "sixMonthPrice",
+    "yearlyPrice",
+    "roomSize",
+    "distanceToCampusInMeters",
+    "waterFeeType",
+    "electricityType",
+    "googleMapsUrl",
+    "description",
+  ];
+
+  const firstErrorField = fieldOrder.find((field) => errors[field]?.length);
+
+  if (!firstErrorField) {
+    return;
+  }
+
+  const targetId =
+    firstErrorField === "prices"
+      ? `monthlyPrice-${formId}`
+      : `${firstErrorField}-${formId}`;
+
+  window.setTimeout(() => {
+    const element = document.getElementById(targetId);
+
+    if (!element) {
+      return;
+    }
+
+    element.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+    });
+
+    if (
+      element instanceof HTMLInputElement ||
+      element instanceof HTMLSelectElement ||
+      element instanceof HTMLTextAreaElement
+    ) {
+      element.focus();
+    }
+  }, 50);
 }
 
 export default function KostForm({
@@ -128,10 +230,40 @@ export default function KostForm({
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  const [values, setValues] = useState<FormValues>(() => getInitialValues(kost));
 
   const isEdit = mode === "edit";
-  const selectedFacilityIds = new Set(kost?.facilityIds ?? []);
   const formId = kost?.id ?? "create";
+
+  function updateValue<K extends keyof FormValues>(
+    key: K,
+    value: FormValues[K]
+  ) {
+    setValues((current) => ({
+      ...current,
+      [key]: value,
+    }));
+
+    if (fieldErrors[key as string]?.length) {
+      setFieldErrors((current) => ({
+        ...current,
+        [key]: undefined,
+      }));
+    }
+  }
+
+  function toggleFacility(facilityId: string) {
+    setValues((current) => {
+      const exists = current.facilityIds.includes(facilityId);
+
+      return {
+        ...current,
+        facilityIds: exists
+          ? current.facilityIds.filter((id) => id !== facilityId)
+          : [...current.facilityIds, facilityId],
+      };
+    });
+  }
 
   function handleSubmit(formData: FormData) {
     setFieldErrors({});
@@ -143,7 +275,10 @@ export default function KostForm({
           : await createKostAction(formData);
 
       if (!result.success) {
-        setFieldErrors(result.fieldErrors ?? {});
+        const errors = result.fieldErrors ?? {};
+
+        setFieldErrors(errors);
+        focusFirstError(errors, formId);
         toast.error(result.message);
         return;
       }
@@ -169,7 +304,8 @@ export default function KostForm({
             <Input
               id={`name-${formId}`}
               name="name"
-              defaultValue={kost?.name ?? ""}
+              value={values.name}
+              onChange={(event) => updateValue("name", event.target.value)}
               placeholder="Contoh: Kost Putri Melati"
               className={getInputClassName(Boolean(fieldErrors.name))}
             />
@@ -183,7 +319,10 @@ export default function KostForm({
             <Input
               id={`contactWhatsapp-${formId}`}
               name="contactWhatsapp"
-              defaultValue={kost?.contactWhatsapp ?? ""}
+              value={values.contactWhatsapp}
+              onChange={(event) =>
+                updateValue("contactWhatsapp", event.target.value)
+              }
               placeholder="Contoh: 6281234567890"
               className={getInputClassName(
                 Boolean(fieldErrors.contactWhatsapp)
@@ -199,7 +338,8 @@ export default function KostForm({
             <select
               id={`regionId-${formId}`}
               name="regionId"
-              defaultValue={kost?.regionId ?? ""}
+              value={values.regionId}
+              onChange={(event) => updateValue("regionId", event.target.value)}
               className={[
                 "h-10 w-full rounded-md border bg-background px-3 py-2 text-sm",
                 fieldErrors.regionId ? "border-red-500" : "",
@@ -224,7 +364,13 @@ export default function KostForm({
             <select
               id={`genderType-${formId}`}
               name="genderType"
-              defaultValue={kost?.genderType ?? "PUTRI"}
+              value={values.genderType}
+              onChange={(event) =>
+                updateValue(
+                  "genderType",
+                  event.target.value as FormValues["genderType"]
+                )
+              }
               className={[
                 "h-10 w-full rounded-md border bg-background px-3 py-2 text-sm",
                 fieldErrors.genderType ? "border-red-500" : "",
@@ -242,7 +388,10 @@ export default function KostForm({
             <select
               id={`status-${formId}`}
               name="status"
-              defaultValue={kost?.status ?? "DRAFT"}
+              value={values.status}
+              onChange={(event) =>
+                updateValue("status", event.target.value as FormValues["status"])
+              }
               className={[
                 "h-10 w-full rounded-md border bg-background px-3 py-2 text-sm",
                 fieldErrors.status ? "border-red-500" : "",
@@ -273,9 +422,13 @@ export default function KostForm({
             <Input
               id={`monthlyPrice-${formId}`}
               name="monthlyPrice"
-              type="number"
-              min={0}
-              defaultValue={kost?.monthlyPrice ?? ""}
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              value={values.monthlyPrice}
+              onChange={(event) =>
+                updateValue("monthlyPrice", sanitizeNumber(event.target.value))
+              }
               placeholder="Contoh: 850000"
               className={getInputClassName(Boolean(fieldErrors.monthlyPrice))}
             />
@@ -289,9 +442,16 @@ export default function KostForm({
             <Input
               id={`threeMonthPrice-${formId}`}
               name="threeMonthPrice"
-              type="number"
-              min={0}
-              defaultValue={kost?.threeMonthPrice ?? ""}
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              value={values.threeMonthPrice}
+              onChange={(event) =>
+                updateValue(
+                  "threeMonthPrice",
+                  sanitizeNumber(event.target.value)
+                )
+              }
               placeholder="Contoh: 2400000"
               className={getInputClassName(
                 Boolean(fieldErrors.threeMonthPrice)
@@ -307,9 +467,13 @@ export default function KostForm({
             <Input
               id={`sixMonthPrice-${formId}`}
               name="sixMonthPrice"
-              type="number"
-              min={0}
-              defaultValue={kost?.sixMonthPrice ?? ""}
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              value={values.sixMonthPrice}
+              onChange={(event) =>
+                updateValue("sixMonthPrice", sanitizeNumber(event.target.value))
+              }
               placeholder="Contoh: 4800000"
               className={getInputClassName(Boolean(fieldErrors.sixMonthPrice))}
             />
@@ -321,9 +485,13 @@ export default function KostForm({
             <Input
               id={`yearlyPrice-${formId}`}
               name="yearlyPrice"
-              type="number"
-              min={0}
-              defaultValue={kost?.yearlyPrice ?? ""}
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              value={values.yearlyPrice}
+              onChange={(event) =>
+                updateValue("yearlyPrice", sanitizeNumber(event.target.value))
+              }
               placeholder="Contoh: 9000000"
               className={getInputClassName(Boolean(fieldErrors.yearlyPrice))}
             />
@@ -338,13 +506,15 @@ export default function KostForm({
           title="Detail Kamar dan Biaya"
           description="Informasi tambahan mengenai kamar, jarak, air, dan listrik."
         />
+
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
             <Label htmlFor={`roomSize-${formId}`}>Ukuran Kamar</Label>
             <Input
               id={`roomSize-${formId}`}
               name="roomSize"
-              defaultValue={kost?.roomSize ?? ""}
+              value={values.roomSize}
+              onChange={(event) => updateValue("roomSize", event.target.value)}
               placeholder="Contoh: 3m x 3m"
               className={getInputClassName(Boolean(fieldErrors.roomSize))}
             />
@@ -358,9 +528,16 @@ export default function KostForm({
             <Input
               id={`distanceToCampusInMeters-${formId}`}
               name="distanceToCampusInMeters"
-              type="number"
-              min={0}
-              defaultValue={kost?.distanceToCampusInMeters ?? ""}
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              value={values.distanceToCampusInMeters}
+              onChange={(event) =>
+                updateValue(
+                  "distanceToCampusInMeters",
+                  sanitizeNumber(event.target.value)
+                )
+              }
               placeholder="Contoh: 500"
               className={getInputClassName(
                 Boolean(fieldErrors.distanceToCampusInMeters)
@@ -376,7 +553,13 @@ export default function KostForm({
             <select
               id={`waterFeeType-${formId}`}
               name="waterFeeType"
-              defaultValue={kost?.waterFeeType ?? "INCLUDED"}
+              value={values.waterFeeType}
+              onChange={(event) =>
+                updateValue(
+                  "waterFeeType",
+                  event.target.value as FormValues["waterFeeType"]
+                )
+              }
               className={[
                 "h-10 w-full rounded-md border bg-background px-3 py-2 text-sm",
                 fieldErrors.waterFeeType ? "border-red-500" : "",
@@ -395,7 +578,13 @@ export default function KostForm({
             <select
               id={`electricityType-${formId}`}
               name="electricityType"
-              defaultValue={kost?.electricityType ?? "TOKEN"}
+              value={values.electricityType}
+              onChange={(event) =>
+                updateValue(
+                  "electricityType",
+                  event.target.value as FormValues["electricityType"]
+                )
+              }
               className={[
                 "h-10 w-full rounded-md border bg-background px-3 py-2 text-sm",
                 fieldErrors.electricityType ? "border-red-500" : "",
@@ -423,7 +612,10 @@ export default function KostForm({
             <Input
               id={`googleMapsUrl-${formId}`}
               name="googleMapsUrl"
-              defaultValue={kost?.googleMapsUrl ?? ""}
+              value={values.googleMapsUrl}
+              onChange={(event) =>
+                updateValue("googleMapsUrl", event.target.value)
+              }
               placeholder="https://maps.google.com/..."
               className={getInputClassName(Boolean(fieldErrors.googleMapsUrl))}
             />
@@ -435,7 +627,10 @@ export default function KostForm({
             <textarea
               id={`description-${formId}`}
               name="description"
-              defaultValue={kost?.description ?? ""}
+              value={values.description}
+              onChange={(event) =>
+                updateValue("description", event.target.value)
+              }
               rows={5}
               className={[
                 "w-full rounded-md border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-black",
@@ -465,7 +660,8 @@ export default function KostForm({
                 type="checkbox"
                 name="facilityIds"
                 value={facility.id}
-                defaultChecked={selectedFacilityIds.has(facility.id)}
+                checked={values.facilityIds.includes(facility.id)}
+                onChange={() => toggleFacility(facility.id)}
               />
               <span>{facility.name}</span>
             </label>
@@ -484,7 +680,10 @@ export default function KostForm({
           <input
             type="checkbox"
             name="isFeatured"
-            defaultChecked={kost?.isFeatured ?? false}
+            checked={values.isFeatured}
+            onChange={(event) =>
+              updateValue("isFeatured", event.target.checked)
+            }
           />
           <span className="text-sm font-medium">
             Tampilkan sebagai kost rekomendasi

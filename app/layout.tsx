@@ -34,7 +34,7 @@ export default function RootLayout({
       <body className="min-h-full font-sans">
         {children}
 
-        <Toaster position="top-right" richColors />
+        <Toaster position="top-right" richColors duration={1500}/>
       </body>
     </html>
   );
