@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useTransition } from "react";
 import { toast } from "sonner";
 
 import {
@@ -24,18 +24,23 @@ type DeleteConfirmDialogProps = {
   title?: string;
   description?: string;
   triggerLabel?: string;
+  trigger?: React.ReactNode;
   action: () => Promise<DeleteResult>;
+
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 };
 
 export default function DeleteConfirmDialog({
   title = "Hapus data?",
   description = "Data yang sudah dihapus tidak dapat dikembalikan.",
   triggerLabel = "Hapus",
+  trigger,
   action,
+  open,
+  onOpenChange,
 }: DeleteConfirmDialogProps) {
   const router = useRouter();
-
-  const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   function handleDelete() {
@@ -48,18 +53,22 @@ export default function DeleteConfirmDialog({
       }
 
       toast.success(result.message);
-      setOpen(false);
+      onOpenChange?.(false);
       router.refresh();
     });
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="text-red-600">
-          {triggerLabel}
-        </Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      {trigger !== null && (
+        <DialogTrigger asChild>
+          {trigger ?? (
+            <Button variant="outline" size="sm" className="text-red-600">
+              {triggerLabel}
+            </Button>
+          )}
+        </DialogTrigger>
+      )}
 
       <DialogContent className="max-w-[calc(100vw-2rem)] sm:max-w-lg">
         <DialogHeader>
@@ -72,7 +81,7 @@ export default function DeleteConfirmDialog({
             type="button"
             variant="outline"
             disabled={isPending}
-            onClick={() => setOpen(false)}
+            onClick={() => onOpenChange?.(false)}
           >
             Batal
           </Button>

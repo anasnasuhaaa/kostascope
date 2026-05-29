@@ -1,9 +1,10 @@
 import Link from "next/link";
 
-import DeleteConfirmDialog from "@/components/delete-confirm-dialog";
 import { deleteKostAction } from "@/features/kost/actions";
+import KostActionMenu from "@/features/kost/kost-action-menu";
 import ImageManagerModal from "@/features/kost-image/image-manager-modal";
 import { prisma } from "@/lib/prisma";
+import { UserRound } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -147,27 +148,27 @@ export default async function AdminKostPage({
     AND: [
       effectiveQ
         ? {
-            OR: [
-              {
-                name: {
-                  contains: effectiveQ,
-                  mode: "insensitive" as const,
-                },
+          OR: [
+            {
+              name: {
+                contains: effectiveQ,
+                mode: "insensitive" as const,
               },
-              {
-                contactWhatsapp: {
-                  contains: effectiveQ,
-                  mode: "insensitive" as const,
-                },
+            },
+            {
+              contactWhatsapp: {
+                contains: effectiveQ,
+                mode: "insensitive" as const,
               },
-              {
-                description: {
-                  contains: effectiveQ,
-                  mode: "insensitive" as const,
-                },
+            },
+            {
+              description: {
+                contains: effectiveQ,
+                mode: "insensitive" as const,
               },
-            ],
-          }
+            },
+          ],
+        }
         : {},
       regionId ? { regionId } : {},
       genderType ? { genderType: genderType as any } : {},
@@ -189,6 +190,12 @@ export default async function AdminKostPage({
       where,
       include: {
         region: true,
+        createdBy: {
+          select: {
+            name: true,
+            email: true,
+          },
+        },
         prices: {
           orderBy: {
             type: "asc",
@@ -441,6 +448,7 @@ export default async function AdminKostPage({
                 <th className="px-4 py-3 text-left">Wilayah</th>
                 <th className="px-4 py-3 text-center">Tipe</th>
                 <th className="px-4 py-3 text-center">Harga</th>
+                <th className="px-4 py-3 text-center">Ditambahkan Oleh</th>
                 <th className="px-4 py-3 text-center">Foto</th>
                 <th className="px-4 py-3 text-center">Status</th>
                 <th className="px-4 py-3 text-center">Aksi</th>
@@ -509,6 +517,14 @@ export default async function AdminKostPage({
                       <span className="text-muted-foreground">-</span>
                     )}
                   </td>
+                  <td className="px-4 py-3 text-center">
+                    <span className="inline-flex max-w-40 items-center gap-1.5 rounded-full bg-zinc-100 px-2.5 py-1 text-xs font-semibold text-zinc-700 ring-1 ring-zinc-200">
+                      <UserRound className="h-3.5 w-3.5 shrink-0" />
+                      <span className="truncate">
+                        {kost.createdBy?.name ?? kost.createdBy?.email ?? "Tidak diketahui"}
+                      </span>
+                    </span>
+                  </td>
 
                   <td className="px-4 py-3 text-center">
                     <ImageManagerModal
@@ -530,22 +546,13 @@ export default async function AdminKostPage({
                       {formatStatus(kost.status)}
                     </span>
                   </td>
-
-                  <td className="px-4 py-3">
-                    <div className="flex justify-center gap-2">
-                      <Link
-                        href={`/admin/kost/${kost.id}/edit`}
-                        className="inline-flex h-7 items-center justify-center rounded-md border px-3 text-sm font-medium hover:bg-muted"
-                      >
-                        Edit
-                      </Link>
-
-                      <DeleteConfirmDialog
-                        title="Hapus kost?"
-                        description={`Kost "${kost.name}" akan dihapus. Data yang sudah dihapus tidak dapat dikembalikan.`}
-                        action={deleteKostAction.bind(null, kost.id)}
-                      />
-                    </div>
+                  <td className="px-4 py-3 text-center">
+                    <KostActionMenu
+                      kost={{
+                        id: kost.id,
+                        name: kost.name,
+                      }}
+                    />
                   </td>
                 </tr>
               ))}
@@ -553,7 +560,7 @@ export default async function AdminKostPage({
               {kosts.length === 0 && (
                 <tr>
                   <td
-                    colSpan={8}
+                    colSpan={9}
                     className="px-4 py-10 text-center text-muted-foreground"
                   >
                     {hasActiveFilter
