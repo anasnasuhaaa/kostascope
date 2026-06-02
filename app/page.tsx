@@ -1,9 +1,32 @@
 import Image from "next/image";
 import Link from "next/link";
+import {
+  ArrowRight,
+  BadgeCheck,
+  BedDouble,
+  Building2,
+  CheckCircle2,
+  ChevronDown,
+  CircleCheck,
+  Database,
+  FileText,
+  Filter,
+  MapPin,
+  MessageCircle,
+  PhoneCall,
+  Search,
+  ShieldCheck,
+  Sparkles,
+  Target,
+  WalletCards,
+  Wifi,
+  Wind,
+} from "lucide-react";
 
 import SiteFooter from "@/components/site-footer";
 import SiteHeader from "@/components/site-header";
 import { prisma } from "@/lib/prisma";
+
 export const dynamic = "force-dynamic";
 
 const needs = [
@@ -20,21 +43,25 @@ const benefits = [
     title: "Data Terstruktur",
     description:
       "Informasi kost disusun rapi mulai dari wilayah, harga, fasilitas, hingga kontak narahubung.",
+    icon: Database,
   },
   {
     title: "Filter Cerdas",
     description:
       "Cari kost berdasarkan wilayah, tipe penghuni, fasilitas, dan kebutuhan sewa.",
+    icon: Filter,
   },
   {
     title: "Info Harga",
     description:
       "Transparansi harga bulanan, enam bulanan, dan tahunan dalam satu tempat.",
+    icon: WalletCards,
   },
   {
     title: "Kontak Langsung",
     description:
       "Hubungi narahubung kost secara langsung untuk proses pengecekan lebih lanjut.",
+    icon: PhoneCall,
   },
 ];
 
@@ -42,20 +69,48 @@ const steps = [
   {
     title: "Cari",
     description: "Gunakan pencarian untuk menemukan wilayah atau nama kost.",
+    icon: Search,
   },
   {
     title: "Filter",
     description: "Saring hasil berdasarkan kebutuhan dan preferensi.",
+    icon: Filter,
   },
   {
     title: "Detail",
     description: "Pelajari harga, fasilitas, lokasi, dan informasi penting.",
+    icon: FileText,
   },
   {
     title: "Hubungi",
     description: "Klik WhatsApp untuk menghubungi narahubung kost.",
+    icon: MessageCircle,
   },
 ];
+
+function getNeedIcon(need: string) {
+  if (need === "Dekat kampus") {
+    return MapPin;
+  }
+
+  if (need === "Harga bulanan dan tahunan") {
+    return WalletCards;
+  }
+
+  if (need === "Fasilitas lengkap") {
+    return Sparkles;
+  }
+
+  if (need === "Kost putra / putri") {
+    return ShieldCheck;
+  }
+
+  if (need === "AC") {
+    return Wind;
+  }
+
+  return Wifi;
+}
 
 function HouseVector() {
   return (
@@ -63,8 +118,9 @@ function HouseVector() {
       <div className="absolute -left-4 top-8 h-28 w-28 rounded-full bg-[#BE1E2D]/15 blur-2xl sm:-left-8 sm:h-40 sm:w-40" />
       <div className="absolute -right-3 bottom-10 h-28 w-28 rounded-full bg-[#BE1E2D]/10 blur-2xl sm:-right-8 sm:h-44 sm:w-44" />
 
-      <div className="relative overflow-hidden rounded-[2rem] border border-red-100 bg-white p-4 shadow-2xl shadow-red-950/10 sm:p-6">
-        <div className="absolute right-6 top-6 rounded-full bg-red-50 px-4 py-2 text-xs font-bold text-[#BE1E2D] shadow-sm">
+      <div className="relative overflow-hidden rounded-[2rem] border border-red-100 bg-white p-4 shadow-2xl shadow-red-950/10 transition duration-500 hover:-translate-y-1 hover:shadow-red-950/15 sm:p-6">
+        <div className="absolute right-4 top-4 z-10 inline-flex items-center gap-1.5 rounded-full bg-red-50 px-3 py-2 text-[10px] font-bold text-[#BE1E2D] shadow-sm ring-1 ring-red-100 sm:right-6 sm:top-6 sm:px-4 sm:text-xs">
+          <BadgeCheck className="h-3.5 w-3.5" />
           Kost verified
         </div>
 
@@ -106,10 +162,7 @@ function HouseVector() {
             stroke="#F3C4CA"
             strokeWidth="3"
           />
-          <path
-            d="M340 88L542 222H138L340 88Z"
-            fill="#BE1E2D"
-          />
+          <path d="M340 88L542 222H138L340 88Z" fill="#BE1E2D" />
           <path
             d="M188 260C188 247.85 197.85 238 210 238H286C298.15 238 308 247.85 308 260V338H188V260Z"
             fill="#FDECEF"
@@ -195,9 +248,11 @@ function HouseVector() {
         </svg>
       </div>
 
-      <div className="absolute -bottom-6 left-4 hidden rounded-2xl border border-red-100 bg-white p-4 shadow-xl shadow-red-950/10 sm:block">
+      <div className="absolute -bottom-6 left-4 max-w-[80%] rounded-2xl border border-red-100 bg-white p-4 shadow-xl shadow-red-950/10 block">
         <p className="text-xs font-semibold text-zinc-500">Dikelola Oleh</p>
-        <p className="text-md font-black text-[#BE1E2D]">Biro Riset dan Teknologi, Ormawa Eksekutif PKU IPB</p>
+        <p className="text-md font-black text-[#BE1E2D]">
+          Biro Riset dan Teknologi, Ormawa Eksekutif PKU IPB
+        </p>
       </div>
     </div>
   );
@@ -210,6 +265,10 @@ function formatRupiah(value: number) {
 function getPriceLabel(type: string) {
   if (type === "MONTHLY") {
     return "1 Bulan";
+  }
+
+  if (type === "THREE_MONTHS") {
+    return "3 Bulan";
   }
 
   if (type === "SIX_MONTHS") {
@@ -230,10 +289,11 @@ function getPriorityPrice(
   }
 
   const monthly = prices.find((price) => price.type === "MONTHLY");
+  const threeMonths = prices.find((price) => price.type === "THREE_MONTHS");
   const sixMonths = prices.find((price) => price.type === "SIX_MONTHS");
   const yearly = prices.find((price) => price.type === "YEARLY");
 
-  return monthly ?? sixMonths ?? yearly ?? prices[0];
+  return monthly ?? threeMonths ?? sixMonths ?? yearly ?? prices[0];
 }
 
 function formatDistance(distance: number | null) {
@@ -286,22 +346,22 @@ function getGenderClassName(genderType: string | null) {
 
 function getFeaturedGridClassName(count: number) {
   if (count === 1) {
-    return "grid gap-5 grid-cols-1";
+    return "grid grid-cols-1 gap-4 sm:max-w-sm";
   }
 
   if (count === 2) {
-    return "grid gap-5 grid-cols-2";
+    return "grid grid-cols-2 gap-4 sm:max-w-2xl";
   }
 
   if (count === 3) {
-    return "grid gap-5 grid-cols-2 md:grid-cols-3";
+    return "grid grid-cols-2 gap-4 md:grid-cols-3";
   }
 
   if (count === 4) {
-    return "grid gap-5 grid-cols-2 md:grid-cols-4";
+    return "grid grid-cols-2 gap-4 md:grid-cols-4";
   }
 
-  return "grid gap-5 grid-cols-2 md:grid-cols-3 xl:grid-cols-5";
+  return "grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-5";
 }
 
 export default async function HomePage() {
@@ -363,9 +423,10 @@ export default async function HomePage() {
           <div className="absolute -left-32 top-28 h-72 w-72 rounded-full bg-[#BE1E2D]/10 blur-3xl" />
           <div className="absolute -right-24 bottom-16 h-80 w-80 rounded-full bg-[#BE1E2D]/10 blur-3xl" />
 
-          <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 py-16 sm:px-6 sm:py-20 lg:grid-cols-2 lg:px-8 lg:py-28">
+          <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-2 lg:px-8 lg:py-28">
             <div className="text-center lg:text-left">
-              <div className="mb-5 inline-flex rounded-full bg-red-50 px-4 py-2 text-xs font-bold text-[#BE1E2D]">
+              <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-red-50 px-4 py-2 text-xs font-bold text-[#BE1E2D] ring-1 ring-red-100">
+                <Sparkles className="h-3.5 w-3.5" />
                 Selamat Datang Mahasiswa Baru IPB Angkatan 63!
               </div>
 
@@ -375,17 +436,17 @@ export default async function HomePage() {
               </h1>
 
               <p className="mx-auto mt-6 max-w-xl text-base leading-8 text-zinc-600 lg:mx-0">
-                Akses informasi kost yang lebih mudah, rapi, dan relevan dengan kebutuhan kamu di IPB.
+                Akses informasi kost yang lebih mudah, rapi, dan relevan dengan
+                kebutuhan kamu di IPB.
               </p>
 
               <form
                 action="/kost"
-                className="mx-auto mt-8 hidden max-w-2xl gap-3 rounded-2xl border border-red-100 bg-white p-3 shadow-2xl shadow-red-950/10 sm:grid sm:grid-cols-[1.4fr_1fr_auto] lg:mx-0"
+                className="mx-auto hidden md:grid mt-8 max-w-2xl gap-3 rounded-2xl border border-red-100 bg-white/95 p-3 shadow-2xl shadow-red-950/10 backdrop-blur sm:grid-cols-[1.4fr_1fr_auto] lg:mx-0"
               >
                 <div className="relative">
-                  <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#BE1E2D]">
-                    ⌕
-                  </span>
+                  <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#BE1E2D]" />
+
                   <input
                     name="q"
                     placeholder="Cari wilayah atau nama kost..."
@@ -401,28 +462,19 @@ export default async function HomePage() {
                   >
                     <option value="">Jenis Sewa</option>
                     <option value="MONTHLY">1 Bulan</option>
+                    <option value="THREE_MONTHS">3 Bulan</option>
                     <option value="SIX_MONTHS">6 Bulan</option>
                     <option value="YEARLY">1 Tahun</option>
                   </select>
 
-                  <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-sm text-[#BE1E2D]">
-                    ▼
-                  </span>
+                  <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#BE1E2D]" />
                 </div>
 
-                <button className="h-12 rounded-xl bg-[#BE1E2D] px-8 text-sm font-bold text-white shadow-lg shadow-red-950/15 transition hover:bg-[#9f1725]">
+                <button className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-[#BE1E2D] px-8 text-sm font-bold text-white shadow-lg shadow-red-950/15 transition hover:-translate-y-0.5 hover:bg-[#9f1725] hover:shadow-xl">
+                  <Search className="h-4 w-4" />
                   Cari
                 </button>
               </form>
-
-              {/* <div className="mt-6 flex flex-wrap justify-center gap-5 text-sm font-semibold lg:justify-start">
-                <Link href="/kost" className="text-[#BE1E2D]">
-                  Mulai Cari →
-                </Link>
-                <Link href="#wilayah" className="text-zinc-700">
-                  Lihat Wilayah
-                </Link>
-              </div> */}
             </div>
 
             <div className="lg:pl-8">
@@ -440,8 +492,8 @@ export default async function HomePage() {
               <div className="mb-10 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
                 <div className="max-w-2xl">
                   <div className="mb-6 inline-flex max-w-full items-center gap-2 rounded-2xl bg-red-50 px-3 py-2 text-[#BE1E2D] ring-1 ring-red-100 sm:mb-4 sm:gap-3 sm:rounded-full sm:px-4">
-                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#BE1E2D] text-[10px] font-black text-white sm:h-6 sm:w-6 sm:text-xs">
-                      ✓
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#BE1E2D] text-white shadow-sm">
+                      <BadgeCheck className="h-4 w-4" />
                     </span>
 
                     <h2 className="text-lg font-black tracking-tight text-[#BE1E2D] sm:text-3xl lg:text-4xl">
@@ -449,21 +501,18 @@ export default async function HomePage() {
                     </h2>
                   </div>
 
-
                   <p className="mt-4 max-w-2xl text-sm leading-7 text-zinc-600 sm:text-base">
-                    Pilihan Kost terbaik untuk kamu yang menginginkan kenyamanan, keamanan, dan akses mudah ke kampus IPB Dramaga.
+                    Pilihan Kost terbaik untuk kamu yang menginginkan
+                    kenyamanan, keamanan, dan akses mudah ke kampus IPB Dramaga.
                   </p>
                 </div>
-                {/* 
-                <Link
-                  href="/kost"
-                  className="inline-flex w-fit rounded-xl border border-red-100 bg-white px-5 py-3 text-sm font-black text-[#BE1E2D] shadow-sm transition hover:bg-red-50"
-                >
-                  Lihat Semua Kost
-                </Link> */}
               </div>
 
-              <div className={getFeaturedGridClassName(featuredKosts.slice(0, 5).length)}>
+              <div
+                className={getFeaturedGridClassName(
+                  featuredKosts.slice(0, 5).length
+                )}
+              >
                 {featuredKosts.slice(0, 5).map((kost) => {
                   const image = kost.images[0];
                   const price = getPriorityPrice(kost.prices);
@@ -482,7 +531,7 @@ export default async function HomePage() {
                             unoptimized
                             fill
                             className="object-cover transition duration-700 group-hover:scale-105"
-                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 20vw"
+                            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
                           />
                         ) : (
                           <div className="flex h-full w-full items-center justify-center">
@@ -493,7 +542,8 @@ export default async function HomePage() {
                         )}
 
                         <div className="absolute inset-x-0 top-0 flex items-start justify-between gap-2 p-3">
-                          <span className="rounded-full bg-white/90 px-3 py-1 text-[10px] font-black text-[#BE1E2D] shadow-sm backdrop-blur">
+                          <span className="inline-flex items-center gap-1 rounded-full bg-white/90 px-3 py-1 text-[10px] font-black text-[#BE1E2D] shadow-sm backdrop-blur">
+                            <BadgeCheck className="h-3.5 w-3.5" />
                             Rekomendasi
                           </span>
                         </div>
@@ -501,7 +551,8 @@ export default async function HomePage() {
 
                       <div className="flex flex-1 flex-col p-4">
                         <div className="mb-3 flex flex-wrap gap-2">
-                          <span className="rounded-full bg-red-50 px-3 py-1 text-[10px] font-black text-[#BE1E2D]">
+                          <span className="inline-flex items-center gap-1 rounded-full bg-red-50 px-3 py-1 text-[10px] font-black text-[#BE1E2D]">
+                            <MapPin className="h-3 w-3" />
                             {kost.region.name}
                           </span>
 
@@ -519,11 +570,12 @@ export default async function HomePage() {
                           {kost.name}
                         </h3>
 
-                        <p className="mt-2 text-xs text-zinc-500">
+                        <p className="mt-2 inline-flex items-center gap-1 text-xs text-zinc-500">
+                          <MapPin className="h-3.5 w-3.5 text-[#BE1E2D]" />
                           {formatDistance(kost.distanceToCampusInMeters)}
                         </p>
 
-                        <div className="mt-4 rounded-2xl bg-[#FFF7F8] p-3">
+                        <div className="mt-4 rounded-2xl bg-[#FFF7F8] p-3 ring-1 ring-red-100">
                           <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
                             Mulai dari
                           </p>
@@ -557,8 +609,9 @@ export default async function HomePage() {
                         </div>
 
                         <div className="mt-auto pt-5">
-                          <div className="flex h-10 items-center justify-center rounded-xl bg-[#BE1E2D] text-xs font-black text-white transition group-hover:bg-[#9f1725]">
+                          <div className="flex h-10 items-center justify-center gap-2 rounded-xl bg-[#BE1E2D] text-xs font-black text-white transition group-hover:bg-[#9f1725]">
                             Lihat Detail
+                            <ArrowRight className="h-3.5 w-3.5 transition group-hover:translate-x-0.5" />
                           </div>
                         </div>
                       </div>
@@ -569,74 +622,132 @@ export default async function HomePage() {
             </div>
           </section>
         )}
-        <section className="bg-white py-16 sm:py-20">
-          <div className="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
-            <div className="grid gap-5 sm:grid-cols-2">
-              {benefits.map((benefit) => (
-                <div
-                  key={benefit.title}
-                  className="rounded-2xl border border-red-100 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl hover:shadow-red-950/5"
-                >
-                  <div className="mb-5 flex h-10 w-10 items-center justify-center rounded-xl bg-red-50 text-[#BE1E2D]">
-                    ✦
+
+        <section className="relative overflow-hidden bg-white py-16 sm:py-20">
+          <div className="absolute -left-24 top-24 h-64 w-64 rounded-full bg-[#BE1E2D]/5 blur-3xl" />
+          <div className="absolute -right-24 bottom-16 h-64 w-64 rounded-full bg-[#BE1E2D]/5 blur-3xl" />
+
+          <div className="relative mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16 lg:px-8">
+            <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
+              {benefits.map((benefit) => {
+                const Icon = benefit.icon;
+
+                return (
+                  <div
+                    key={benefit.title}
+                    className="group relative overflow-hidden rounded-3xl border border-red-100 bg-white p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-red-200 hover:shadow-xl hover:shadow-red-950/5 sm:p-6"
+                  >
+                    <div className="absolute -right-10 -top-10 h-28 w-28 rounded-full bg-red-50 opacity-0 transition duration-300 group-hover:opacity-100" />
+
+                    <div className="relative">
+                      <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-2xl bg-red-50 text-[#BE1E2D] ring-1 ring-red-100 transition duration-300 group-hover:bg-[#BE1E2D] group-hover:text-white">
+                        <Icon className="h-5 w-5" />
+                      </div>
+
+                      <h3 className="text-lg font-black tracking-tight text-zinc-950">
+                        {benefit.title}
+                      </h3>
+
+                      <p className="mt-3 text-sm leading-6 text-zinc-600">
+                        {benefit.description}
+                      </p>
+                    </div>
                   </div>
-                  <h3 className="text-lg font-black">{benefit.title}</h3>
-                  <p className="mt-3 text-sm leading-6 text-zinc-600">
-                    {benefit.description}
-                  </p>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             <div className="flex flex-col justify-center">
-              <p className="text-sm font-black uppercase tracking-widest text-[#BE1E2D]">
+              <div className="inline-flex w-fit items-center gap-2 rounded-full bg-red-50 px-3 py-1.5 text-xs font-black uppercase tracking-widest text-[#BE1E2D] ring-1 ring-red-100">
+                <Sparkles className="h-3.5 w-3.5" />
                 Keunggulan Kami
-              </p>
-              <h2 className="mt-4 max-w-xl text-3xl font-black tracking-tight sm:text-4xl">
+              </div>
+
+              <h2 className="mt-5 max-w-xl text-3xl font-black tracking-tight text-zinc-950 sm:text-4xl">
                 Mendefinisikan Ulang Pengalaman Mencari Kost Mahasiswa
               </h2>
+
               <p className="mt-6 max-w-xl text-base leading-8 text-zinc-600">
                 Kami memahami bahwa tempat tinggal adalah pondasi kenyamanan
                 belajar. AngkasaKost hadir untuk menjawab kebingungan Maba!
               </p>
 
-              <div className="mt-6 space-y-3 text-sm font-semibold text-zinc-700">
-                <p>✓ Verifikasi lokasi & fasilitas fisik</p>
-                <p>✓ Update ketersediaan kamar real-time</p>
+              <div className="mt-7 grid gap-3">
+                <div className="flex items-center gap-3 rounded-2xl border border-red-100 bg-[#FFF7F8] px-4 py-3">
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#BE1E2D] text-white">
+                    <CircleCheck className="h-4 w-4" />
+                  </span>
+
+                  <p className="text-sm font-semibold text-zinc-700">
+                    Verifikasi lokasi & fasilitas fisik
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-3 rounded-2xl border border-red-100 bg-[#FFF7F8] px-4 py-3">
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#BE1E2D] text-white">
+                    <CircleCheck className="h-4 w-4" />
+                  </span>
+
+                  <p className="text-sm font-semibold text-zinc-700">
+                    Update data secara berkala untuk memastikan informasi tetap akurat dan relevan
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
-        <section className="bg-[#F4F6FF] py-14 sm:py-16">
-          <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-black tracking-tight">
+        <section className="relative overflow-hidden bg-[#F4F6FF] py-14 sm:py-16">
+          <div className="absolute left-1/2 top-0 h-40 w-80 -translate-x-1/2 rounded-full bg-[#BE1E2D]/5 blur-3xl" />
+
+          <div className="relative mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
+            <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-2xl bg-white text-[#BE1E2D] shadow-sm ring-1 ring-red-100">
+              <Target className="h-5 w-5" />
+            </div>
+
+            <h2 className="mt-5 text-3xl font-black tracking-tight">
               Cari Berdasarkan Kebutuhan
             </h2>
+
             <p className="mt-3 text-sm text-zinc-600">
               Pilih kategori yang paling sesuai dengan prioritas harian Kamu.
             </p>
 
             <div className="mt-8 flex flex-wrap justify-center gap-3">
-              {needs.map((need) => (
-                <Link
-                  key={need}
-                  href="/kost"
-                  className="rounded-full border border-red-100 bg-white px-5 py-2.5 text-sm font-semibold text-zinc-700 shadow-sm transition hover:border-[#BE1E2D] hover:text-[#BE1E2D]"
-                >
-                  {need}
-                </Link>
-              ))}
+              {needs.map((need) => {
+                const Icon = getNeedIcon(need);
+
+                return (
+                  <Link
+                    key={need}
+                    href="/kost"
+                    className="group inline-flex items-center gap-2 rounded-full border border-red-100 bg-white px-4 py-2.5 text-sm font-semibold text-zinc-700 shadow-sm transition hover:-translate-y-0.5 hover:border-[#BE1E2D] hover:text-[#BE1E2D] hover:shadow-md sm:px-5"
+                  >
+                    <Icon className="h-4 w-4 text-[#BE1E2D]" />
+                    {need}
+                  </Link>
+                );
+              })}
             </div>
           </div>
         </section>
 
-        <section id="wilayah" className="bg-white py-16 sm:py-20">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <section
+          id="wilayah"
+          className="relative overflow-hidden bg-white py-16 sm:py-20"
+        >
+          <div className="absolute -right-32 top-28 h-72 w-72 rounded-full bg-[#BE1E2D]/5 blur-3xl" />
+
+          <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="max-w-2xl">
+              <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-2xl bg-red-50 text-[#BE1E2D] ring-1 ring-red-100">
+                <MapPin className="h-5 w-5" />
+              </div>
+
               <h2 className="text-3xl font-black tracking-tight">
                 Wilayah Sekitar IPB
               </h2>
+
               <p className="mt-3 text-sm leading-6 text-zinc-600">
                 Bogor memiliki beragam area strategis. Tentukan yang paling
                 dekat dengan aktivitas Kamu.
@@ -649,22 +760,30 @@ export default async function HomePage() {
                   key={region.id}
                   href={`/kost?regionId=${region.id}`}
                   className={[
-                    "group relative overflow-hidden rounded-3xl bg-zinc-900 p-6 text-white shadow-xl shadow-zinc-950/10",
+                    "group relative overflow-hidden rounded-3xl bg-zinc-900 p-6 text-white shadow-xl shadow-zinc-950/10 transition duration-300 hover:-translate-y-1 hover:shadow-2xl",
                     index === 0 ? "lg:col-span-2 lg:row-span-2" : "",
                   ].join(" ")}
                 >
-                  <div className="absolute inset-0 bg-linear-to-br from-[#BE1E2D]/80 via-zinc-950/40 to-zinc-950" />
-                  <div className="absolute inset-0 opacity-30 transition duration-500 group-hover:scale-110">
+                  <div className="absolute inset-0 bg-linear-to-br from-[#BE1E2D]/90 via-zinc-950/55 to-zinc-950" />
+
+                  <div className="absolute inset-0 opacity-30 transition duration-700 group-hover:scale-110">
                     <div className="h-full w-full bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.5),transparent_35%),radial-gradient(circle_at_80%_80%,rgba(190,30,45,0.6),transparent_40%)]" />
                   </div>
 
                   <div className="relative flex min-h-52 flex-col justify-end">
-                    <h3 className="text-2xl font-black">{region.name}</h3>
+                    <div className="mb-auto flex h-10 w-10 items-center justify-center rounded-2xl bg-white/10 text-white ring-1 ring-white/15 backdrop-blur">
+                      <MapPin className="h-5 w-5" />
+                    </div>
+
+                    <h3 className="mt-8 text-2xl font-black">{region.name}</h3>
+
                     <p className="mt-2 max-w-sm text-sm text-white/80">
                       {region._count.kosts} kost tersedia di area ini.
                     </p>
-                    <span className="mt-4 inline-flex w-fit rounded-md bg-white px-4 py-2 text-xs font-bold text-[#BE1E2D]">
+
+                    <span className="mt-5 inline-flex w-fit items-center gap-2 rounded-xl bg-white px-4 py-2 text-xs font-bold text-[#BE1E2D] transition group-hover:bg-red-50">
                       Lihat Kost
+                      <ArrowRight className="h-3.5 w-3.5 transition group-hover:translate-x-0.5" />
                     </span>
                   </div>
                 </Link>
@@ -673,49 +792,80 @@ export default async function HomePage() {
           </div>
         </section>
 
-        <section className="bg-[#F4F6FF] py-16 sm:py-20">
-          <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-black tracking-tight">
+        <section className="relative overflow-hidden bg-[#F4F6FF] py-16 sm:py-20">
+          <div className="absolute -left-28 top-20 h-64 w-64 rounded-full bg-[#BE1E2D]/5 blur-3xl" />
+
+          <div className="relative mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
+            <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-2xl bg-white text-[#BE1E2D] shadow-sm ring-1 ring-red-100">
+              <Sparkles className="h-5 w-5" />
+            </div>
+
+            <h2 className="mt-5 text-3xl font-black tracking-tight">
               Bagaimana Cara Kerjanya?
             </h2>
+
             <p className="mt-3 text-sm text-zinc-600">
               Langkah sederhana untuk mendapatkan hunian impian.
             </p>
 
             <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-              {steps.map((step, index) => (
-                <div
-                  key={step.title}
-                  className="rounded-2xl border border-red-100 bg-white p-6 shadow-sm"
-                >
-                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#BE1E2D] text-lg font-black text-white">
-                    {index + 1}
+              {steps.map((step, index) => {
+                const Icon = step.icon;
+
+                return (
+                  <div
+                    key={step.title}
+                    className="group relative overflow-hidden rounded-3xl border border-red-100 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-red-950/5"
+                  >
+                    <div className="absolute right-4 top-4 text-5xl font-black text-red-50 transition group-hover:text-red-100">
+                      {String(index + 1).padStart(2, "0")}
+                    </div>
+
+                    <div className="relative">
+                      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#BE1E2D] text-white shadow-lg shadow-red-950/15">
+                        <Icon className="h-6 w-6" />
+                      </div>
+
+                      <h3 className="mt-5 text-xl font-black">{step.title}</h3>
+
+                      <p className="mt-3 text-sm leading-6 text-zinc-600">
+                        {step.description}
+                      </p>
+                    </div>
                   </div>
-                  <h3 className="mt-5 text-xl font-black">{step.title}</h3>
-                  <p className="mt-3 text-sm leading-6 text-zinc-600">
-                    {step.description}
-                  </p>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </section>
 
         <section className="bg-white px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
-          <div className="mx-auto max-w-7xl overflow-hidden rounded-[2rem] bg-[#BE1E2D] px-6 py-14 text-center text-white shadow-2xl shadow-red-950/20 sm:px-10 sm:py-16">
-            <h2 className="mx-auto max-w-2xl text-3xl font-black tracking-tight sm:text-5xl">
-              Siap Menemukan Rumah Kedua Kamu?
-            </h2>
-            <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-white/80">
-              Mulai pencarian sekarang dan nikmati masa kuliah dengan hunian
-              yang nyaman, aman, dan berkualitas.
-            </p>
-            <Link
-              href="/kost"
-              className="mt-8 inline-flex rounded-xl bg-white px-8 py-3 text-sm font-black text-[#BE1E2D] transition hover:bg-red-50"
-            >
-              Cari Kost Sekarang
-            </Link>
+          <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[2rem] bg-[#BE1E2D] px-6 py-14 text-center text-white shadow-2xl shadow-red-950/20 sm:px-10 sm:py-16">
+            <div className="absolute -left-20 -top-20 h-56 w-56 rounded-full bg-white/10 blur-2xl" />
+            <div className="absolute -bottom-24 -right-16 h-64 w-64 rounded-full bg-red-950/25 blur-2xl" />
+
+            <div className="relative">
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 text-white ring-1 ring-white/20 backdrop-blur">
+                <BedDouble className="h-6 w-6" />
+              </div>
+
+              <h2 className="mx-auto mt-6 max-w-2xl text-3xl font-black tracking-tight sm:text-5xl">
+                Siap Menemukan Rumah Kedua Kamu?
+              </h2>
+
+              <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-white/80">
+                Mulai pencarian sekarang dan nikmati masa kuliah dengan hunian
+                yang nyaman, aman, dan berkualitas.
+              </p>
+
+              <Link
+                href="/kost"
+                className="mt-8 inline-flex items-center gap-2 rounded-xl bg-white px-8 py-3 text-sm font-black text-[#BE1E2D] shadow-lg shadow-red-950/10 transition hover:-translate-y-0.5 hover:bg-red-50 hover:shadow-xl"
+              >
+                Cari Kost Sekarang
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
           </div>
         </section>
       </main>
