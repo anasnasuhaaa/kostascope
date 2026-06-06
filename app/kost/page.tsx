@@ -316,7 +316,7 @@ export default async function KostPage({ searchParams }: KostPageProps) {
           </div>
         </section>
 
-        <section className="mx-auto grid max-w-7xl gap-4 px-3 py-4 sm:px-6 lg:grid-cols-[320px_1fr] lg:gap-6 lg:px-8 lg:py-8">
+        <section className="mx-auto grid max-w-7xl gap-4 px-3 py-4 sm:px-6 md:grid-cols-[320px_1fr] lg:gap-6 lg:px-8 lg:py-8">
           <aside className="h-fit rounded-2xl border border-red-100 bg-white p-3 shadow-sm sm:p-4 lg:sticky lg:top-24 lg:rounded-3xl lg:p-5">
             <div className="mb-3 flex items-start justify-between gap-3 lg:mb-5">
               <div>

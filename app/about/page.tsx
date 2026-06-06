@@ -4,22 +4,35 @@ import Image from "next/image";
 import SiteFooter from "@/components/site-footer";
 import SiteHeader from "@/components/site-header";
 
+import {
+  Accessibility,
+  Info,
+  LayoutList,
+  Search,
+  Sparkles,
+} from "lucide-react";
+
 const values = [
   {
     title: "Responsif",
     description: "Informasi disusun agar mudah diakses di berbagai perangkat.",
+    icon: Accessibility,
   },
   {
     title: "Mudah Diakses",
     description: "Cari wilayah, fasilitas, dan harga dalam satu alur sederhana.",
+    icon: Search,
   },
   {
     title: "Terstruktur",
     description: "Data kost ditampilkan rapi untuk memudahkan perbandingan.",
+    icon: LayoutList,
   },
   {
     title: "Informatif",
-    description: "Detail penting seperti harga, fasilitas, dan kontak tersedia jelas.",
+    description:
+      "Detail penting seperti harga, fasilitas, dan kontak tersedia jelas.",
+    icon: Info,
   },
 ];
 
@@ -124,33 +137,54 @@ export default function AboutPage() {
           </div>
         </section> */}
 
-        <section className="bg-[#F4F6FF] py-20">
-          <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-black tracking-tight">
+  <section className="relative overflow-hidden bg-[#F4F6FF] py-16 sm:py-20">
+          <div className="absolute left-1/2 top-0 h-52 w-96 -translate-x-1/2 rounded-full bg-[#BE1E2D]/5 blur-3xl" />
+          <div className="absolute -left-24 bottom-0 h-56 w-56 rounded-full bg-[#BE1E2D]/5 blur-3xl" />
+
+          <div className="relative mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-[#BE1E2D] shadow-sm ring-1 ring-red-100">
+              <Sparkles className="h-5 w-5" />
+            </div>
+
+            <h2 className="mt-5 text-3xl font-black tracking-tight sm:text-4xl">
               Nilai yang Kami Bawa
             </h2>
+
             <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-zinc-600">
               Standar kualitas dalam setiap informasi yang kami sajikan.
             </p>
 
-            <div className="mt-10 grid gap-5 md:grid-cols-4">
-              {values.map((value) => (
-                <div
-                  key={value.title}
-                  className="rounded-2xl border border-red-100 bg-white p-6 text-left shadow-sm"
-                >
-                  <div className="mb-5 flex h-10 w-10 items-center justify-center rounded-xl bg-red-50 text-[#BE1E2D]">
-                    ✦
+            <div className="mt-10 grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4">
+              {values.map((value) => {
+                const Icon = value.icon;
+
+                return (
+                  <div
+                    key={value.title}
+                    className="group relative overflow-hidden rounded-3xl border border-red-100 bg-white p-5 text-left shadow-sm transition duration-300 hover:-translate-y-1 hover:border-red-200 hover:shadow-xl hover:shadow-red-950/5 sm:p-6"
+                  >
+                    <div className="absolute -right-10 -top-10 h-28 w-28 rounded-full bg-red-50 opacity-0 transition duration-300 group-hover:opacity-100" />
+
+                    <div className="relative">
+                      <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-2xl bg-red-50 text-[#BE1E2D] ring-1 ring-red-100 transition duration-300 group-hover:bg-[#BE1E2D] group-hover:text-white">
+                        <Icon className="h-5 w-5" />
+                      </div>
+
+                      <h3 className="text-lg font-black tracking-tight">
+                        {value.title}
+                      </h3>
+
+                      <p className="mt-3 text-sm leading-6 text-zinc-600">
+                        {value.description}
+                      </p>
+                    </div>
                   </div>
-                  <h3 className="text-lg font-black">{value.title}</h3>
-                  <p className="mt-3 text-sm leading-6 text-zinc-600">
-                    {value.description}
-                  </p>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </section>
+
 
         <section className="bg-white py-20">
           <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">

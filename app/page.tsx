@@ -21,6 +21,7 @@ import {
   WalletCards,
   Wifi,
   Wind,
+  Navigation,
 } from "lucide-react";
 
 import SiteFooter from "@/components/site-footer";
@@ -736,58 +737,112 @@ export default async function HomePage() {
           id="wilayah"
           className="relative overflow-hidden bg-white py-16 sm:py-20"
         >
-          <div className="absolute -right-32 top-28 h-72 w-72 rounded-full bg-[#BE1E2D]/5 blur-3xl" />
+          <div className="absolute -left-24 top-20 h-64 w-64 rounded-full bg-[#BE1E2D]/5 blur-3xl" />
+          <div className="absolute -right-24 bottom-0 h-72 w-72 rounded-full bg-[#BE1E2D]/5 blur-3xl" />
 
           <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="max-w-2xl">
-              <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-2xl bg-red-50 text-[#BE1E2D] ring-1 ring-red-100">
-                <MapPin className="h-5 w-5" />
+            <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+              <div className="max-w-2xl">
+                <div className="mb-6 inline-flex max-w-full items-center gap-2 rounded-2xl bg-red-50 px-3 py-2 text-[#BE1E2D] ring-1 ring-red-100 sm:mb-4 sm:gap-3 sm:rounded-full sm:px-4">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#BE1E2D] text-white shadow-sm">
+                    <MapPin className="h-4 w-4" />
+                  </span>
+
+                  <h2 className="text-lg font-black tracking-tight text-[#BE1E2D] sm:text-3xl lg:text-4xl">
+                    Wilayah Sekitar IPB Dramaga
+                  </h2>
+                </div>
+
+                <p className="mt-3 text-sm leading-6 text-zinc-600 sm:text-base sm:leading-7">
+                  Tentukan wilayah yang paling sesuai dengan aktivitas dan kebutuhan Kamu.
+                </p>
               </div>
 
-              <h2 className="text-3xl font-black tracking-tight">
-                Wilayah Sekitar IPB
-              </h2>
+              <div className="inline-flex w-fit items-center gap-3 rounded-2xl border border-red-100 bg-[#FFF7F8] px-4 py-3 shadow-sm">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#BE1E2D] text-white shadow-lg shadow-red-950/10">
+                  <Building2 className="h-5 w-5" />
+                </div>
 
-              <p className="mt-3 text-sm leading-6 text-zinc-600">
-                Bogor memiliki beragam area strategis. Tentukan yang paling
-                dekat dengan aktivitas Kamu.
-              </p>
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">
+                    Total Tersedia
+                  </p>
+
+                  <p className="text-lg font-black text-[#BE1E2D]">
+                    {regions.reduce(
+                      (total, region) => total + region._count.kosts,
+                      0
+                    )}{" "}
+                    Kost
+                  </p>
+                </div>
+              </div>
             </div>
 
-            <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-10 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
               {regions.map((region, index) => (
                 <Link
                   key={region.id}
                   href={`/kost?regionId=${region.id}`}
-                  className={[
-                    "group relative overflow-hidden rounded-3xl bg-zinc-900 p-6 text-white shadow-xl shadow-zinc-950/10 transition duration-300 hover:-translate-y-1 hover:shadow-2xl",
-                    index === 0 ? "lg:col-span-2 lg:row-span-2" : "",
-                  ].join(" ")}
+                  className="group relative isolate overflow-hidden rounded-3xl border border-red-100 bg-linear-to-br from-white via-[#FFF9FA] to-[#F7F8FF] p-4 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-red-200 hover:shadow-xl hover:shadow-red-950/10 sm:p-5"
                 >
-                  <div className="absolute inset-0 bg-linear-to-br from-[#BE1E2D]/90 via-zinc-950/55 to-zinc-950" />
+                  <div className="absolute inset-x-0 top-0 h-1 origin-left scale-x-0 bg-[#BE1E2D] transition duration-300 group-hover:scale-x-100" />
 
-                  <div className="absolute inset-0 opacity-30 transition duration-700 group-hover:scale-110">
-                    <div className="h-full w-full bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.5),transparent_35%),radial-gradient(circle_at_80%_80%,rgba(190,30,45,0.6),transparent_40%)]" />
+                  <div className="absolute -right-10 -top-10 h-28 w-28 rounded-full border-14 border-red-50 transition duration-500 group-hover:scale-110 group-hover:border-red-100 sm:h-32 sm:w-32" />
+
+                  <div className="absolute -bottom-14 -left-10 h-32 w-32 rounded-full bg-[#BE1E2D]/10 blur-2xl transition duration-500 group-hover:scale-125" />
+
+                  <div className="absolute bottom-3 right-2 opacity-[0.06] transition duration-500 group-hover:scale-110 group-hover:opacity-[0.12]">
+                    <Building2 className="h-20 w-20 text-[#BE1E2D] sm:h-28 sm:w-28" />
                   </div>
 
-                  <div className="relative flex min-h-52 flex-col justify-end">
-                    <div className="mb-auto flex h-10 w-10 items-center justify-center rounded-2xl bg-white/10 text-white ring-1 ring-white/15 backdrop-blur">
-                      <MapPin className="h-5 w-5" />
+                  <div className="relative flex min-h-44 flex-col sm:min-h-56">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#BE1E2D] text-white shadow-lg shadow-red-950/15 transition duration-300 group-hover:-translate-y-0.5 group-hover:rotate-3 sm:h-12 sm:w-12">
+                        <Navigation className="h-4 w-4 sm:h-5 sm:w-5" />
+                      </div>
+
+                      <span className="text-3xl font-black leading-none text-red-100 transition duration-300 group-hover:text-red-200 sm:text-4xl">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
                     </div>
 
-                    <h3 className="mt-8 text-2xl font-black">{region.name}</h3>
+                    <div className="mt-auto pt-8">
+                      <h3 className="line-clamp-2 text-lg font-black tracking-tight text-zinc-950 sm:text-2xl">
+                        {region.name}
+                      </h3>
 
-                    <p className="mt-2 max-w-sm text-sm text-white/80">
-                      {region._count.kosts} kost tersedia di area ini.
-                    </p>
+                      <div className="mt-3 inline-flex items-center gap-2 rounded-xl border border-red-100 bg-white/85 px-2.5 py-2 shadow-sm backdrop-blur sm:px-3">
+                        <Building2 className="h-3.5 w-3.5 shrink-0 text-[#BE1E2D]" />
 
-                    <span className="mt-5 inline-flex w-fit items-center gap-2 rounded-xl bg-white px-4 py-2 text-xs font-bold text-[#BE1E2D] transition group-hover:bg-red-50">
-                      Lihat Kost
-                      <ArrowRight className="h-3.5 w-3.5 transition group-hover:translate-x-0.5" />
-                    </span>
+                        <p className="text-[11px] font-bold text-zinc-700 sm:text-sm">
+                          <span className="font-black text-[#BE1E2D]">
+                            {region._count.kosts}
+                          </span>{" "}
+                          kost tersedia
+                        </p>
+                      </div>
+
+                      <span className="mt-4 inline-flex items-center gap-1.5 text-[11px] font-black text-[#BE1E2D] sm:text-xs">
+                        Lihat Kost
+                        <ArrowRight className="h-3.5 w-3.5 transition duration-300 group-hover:translate-x-1" />
+                      </span>
+                    </div>
                   </div>
                 </Link>
               ))}
+
+              {regions.length === 0 && (
+                <div className="col-span-2 rounded-3xl border border-dashed border-red-200 bg-[#FFF7F8] px-6 py-12 text-center lg:col-span-3 xl:col-span-4">
+                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-[#BE1E2D] shadow-sm ring-1 ring-red-100">
+                    <BedDouble className="h-5 w-5" />
+                  </div>
+
+                  <p className="mt-4 text-sm font-bold text-zinc-700">
+                    Belum ada wilayah yang tersedia.
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </section>
