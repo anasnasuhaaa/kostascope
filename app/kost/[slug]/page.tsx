@@ -87,10 +87,26 @@ function getLowestPriceItem(
   }, prices[0]);
 }
 
-function buildWhatsappUrl(phone: string, kostName: string) {
+function buildWhatsappUrl(
+  phone: string,
+  kostName: string,
+  regionName?: string,
+) {
   const cleanPhone = phone.replace(/\D/g, "");
+
   const message = encodeURIComponent(
-    `Halo kak, aku tertarik dengan informasi ${kostName} yang aku lihat di AngkasaKost.`
+    [
+      "Halo Kak,",
+      "",
+      `Saya tertarik dengan informasi ${kostName} yang saya lihat di AngkasaKost.`,
+      regionName ? `Wilayah: ${regionName}.` : null,
+      "",
+      "Apakah saya boleh meminta informasi lebih lanjut?",
+      "",
+      "Terima kasih.",
+    ]
+      .filter(Boolean)
+      .join("\n"),
   );
 
   return `https://wa.me/${cleanPhone}?text=${message}`;
@@ -311,7 +327,15 @@ export default async function DetailKostPage({ params }: DetailKostPageProps) {
 
   const lowestPrice = getLowestPrice(kost.prices);
   const lowestPriceItem = getLowestPriceItem(kost.prices);
-  const whatsappUrl = buildWhatsappUrl(kost.contactWhatsapp, kost.name);
+  const publicRelationWhatsapp = kost.region.publicRelationWhatsapp;
+
+  const whatsappUrl = publicRelationWhatsapp
+    ? buildWhatsappUrl(
+      publicRelationWhatsapp,
+      kost.name,
+      kost.region.name,
+    )
+    : "#";
 
   return (
     <div className="min-h-screen bg-[#FAFAFC] text-zinc-950">
@@ -482,12 +506,18 @@ export default async function DetailKostPage({ params }: DetailKostPageProps) {
                 <div className="group rounded-2xl border border-red-50 bg-linear-to-br from-white to-[#FFF7F8] p-4 transition hover:-translate-y-0.5 hover:shadow-lg hover:shadow-red-950/5">
                   <div className="flex items-start gap-3">
                     <InfoIcon type="contact" />
+
                     <div className="min-w-0">
                       <p className="text-xs font-semibold uppercase tracking-wide text-zinc-400">
-                        Narahubung
+                        Public Relation Wilayah
                       </p>
-                      <p className="mt-1 wrap-break-words font-black text-zinc-950">
-                        {kost.contactWhatsapp}
+
+                      <p className="mt-1 font-black text-zinc-950">
+                        {kost.region.publicRelationName ?? "Belum tersedia"}
+                      </p>
+
+                      <p className="mt-1 wrap-break-words text-sm font-semibold text-[#BE1E2D]">
+                        {kost.region.publicRelationWhatsapp ?? "Kontak belum tersedia"}
                       </p>
                     </div>
                   </div>

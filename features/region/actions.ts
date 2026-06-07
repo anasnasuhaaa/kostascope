@@ -4,8 +4,29 @@ import { revalidatePath } from "next/cache";
 
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { slugify } from "@/lib/slugify";
-import { regionSchema } from "./schema";
+
+type RegionActionResult = {
+  success: boolean;
+  message: string;
+};
+
+function createSlug(value: string) {
+  return value
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function normalizeWhatsapp(value: string) {
+  return value.replace(/\D/g, "");
+}
+
+function isValidWhatsapp(value: string) {
+  return /^628\d{7,13}$/.test(value);
+}
 
 async function requireAdmin() {
   const session = await auth();
@@ -17,144 +38,245 @@ async function requireAdmin() {
   return session;
 }
 
-async function generateUniqueSlug(name: string, currentId?: string) {
-  const baseSlug = slugify(name);
-  let slug = baseSlug;
-  let counter = 1;
+function revalidateRegionPages() {
+  revalidatePath("/admin/regions");
+  revalidatePath("/");
+  revalidatePath("/kost");
+}
 
-  while (true) {
-    const existing = await prisma.region.findUnique({
+export async function createRegionAction(
+  formData: FormData,
+): Promise<RegionActionResult> {
+  try {
+    await requireAdmin();
+
+    const name = String(formData.get("name") ?? "").trim();
+    const publicRelationName = String(
+      formData.get("publicRelationName") ?? "",
+    ).trim();
+
+    const publicRelationWhatsapp = normalizeWhatsapp(
+      String(formData.get("publicRelationWhatsapp") ?? ""),
+    );
+
+    if (!name) {
+      return {
+        success: false,
+        message: "Nama wilayah wajib diisi",
+      };
+    }
+
+    if (!publicRelationName) {
+      return {
+        success: false,
+        message: "Nama Public Relation wajib diisi",
+      };
+    }
+
+    if (!isValidWhatsapp(publicRelationWhatsapp)) {
+      return {
+        success: false,
+        message:
+          "Nomor WhatsApp Public Relation harus menggunakan format 628..., tanpa spasi atau tanda baca",
+      };
+    }
+
+    const slug = createSlug(name);
+
+    if (!slug) {
+      return {
+        success: false,
+        message: "Nama wilayah tidak valid",
+      };
+    }
+
+    const existingRegion = await prisma.region.findFirst({
       where: {
-        slug,
+        OR: [{ name }, { slug }],
+      },
+      select: {
+        id: true,
       },
     });
 
-    if (!existing || existing.id === currentId) {
-      return slug;
+    if (existingRegion) {
+      return {
+        success: false,
+        message: "Wilayah dengan nama tersebut sudah tersedia",
+      };
     }
 
-    slug = `${baseSlug}-${counter}`;
-    counter++;
+    await prisma.region.create({
+      data: {
+        name,
+        slug,
+        publicRelationName,
+        publicRelationWhatsapp,
+      },
+    });
+
+    revalidateRegionPages();
+
+    return {
+      success: true,
+      message: "Wilayah berhasil ditambahkan",
+    };
+  } catch (error) {
+    console.error("CREATE_REGION_ERROR", error);
+
+    return {
+      success: false,
+      message: "Wilayah gagal ditambahkan",
+    };
   }
 }
 
-export async function createRegionAction(formData: FormData) {
-  await requireAdmin();
+export async function updateRegionAction(
+  regionId: string,
+  formData: FormData,
+): Promise<RegionActionResult> {
+  try {
+    await requireAdmin();
 
-  const parsed = regionSchema.safeParse({
-    name: formData.get("name"),
-  });
+    const name = String(formData.get("name") ?? "").trim();
+    const publicRelationName = String(
+      formData.get("publicRelationName") ?? "",
+    ).trim();
 
-  if (!parsed.success) {
+    const publicRelationWhatsapp = normalizeWhatsapp(
+      String(formData.get("publicRelationWhatsapp") ?? ""),
+    );
+
+    if (!name) {
+      return {
+        success: false,
+        message: "Nama wilayah wajib diisi",
+      };
+    }
+
+    if (!publicRelationName) {
+      return {
+        success: false,
+        message: "Nama Public Relation wajib diisi",
+      };
+    }
+
+    if (!isValidWhatsapp(publicRelationWhatsapp)) {
+      return {
+        success: false,
+        message:
+          "Nomor WhatsApp Public Relation harus menggunakan format 628..., tanpa spasi atau tanda baca",
+      };
+    }
+
+    const slug = createSlug(name);
+
+    if (!slug) {
+      return {
+        success: false,
+        message: "Nama wilayah tidak valid",
+      };
+    }
+
+    const existingRegion = await prisma.region.findFirst({
+      where: {
+        OR: [{ name }, { slug }],
+        NOT: {
+          id: regionId,
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (existingRegion) {
+      return {
+        success: false,
+        message: "Wilayah dengan nama tersebut sudah tersedia",
+      };
+    }
+
+    await prisma.region.update({
+      where: {
+        id: regionId,
+      },
+      data: {
+        name,
+        slug,
+        publicRelationName,
+        publicRelationWhatsapp,
+      },
+    });
+
+    revalidateRegionPages();
+
+    return {
+      success: true,
+      message: "Wilayah berhasil diperbarui",
+    };
+  } catch (error) {
+    console.error("UPDATE_REGION_ERROR", error);
+
     return {
       success: false,
-      message: "Nama wilayah tidak valid",
+      message: "Wilayah gagal diperbarui",
     };
   }
-
-  const slug = await generateUniqueSlug(parsed.data.name);
-
-  await prisma.region.create({
-    data: {
-      name: parsed.data.name,
-      slug,
-    },
-  });
-
-  revalidatePath("/admin/regions");
-
-  return {
-    success: true,
-    message: "Wilayah berhasil ditambahkan",
-  };
 }
 
-export async function updateRegionAction(id: string, formData: FormData) {
-  await requireAdmin();
+export async function deleteRegionAction(
+  regionId: string,
+): Promise<RegionActionResult> {
+  try {
+    await requireAdmin();
 
-  const parsed = regionSchema.safeParse({
-    name: formData.get("name"),
-  });
+    const region = await prisma.region.findUnique({
+      where: {
+        id: regionId,
+      },
+      include: {
+        _count: {
+          select: {
+            kosts: true,
+          },
+        },
+      },
+    });
 
-  if (!parsed.success) {
+    if (!region) {
+      return {
+        success: false,
+        message: "Wilayah tidak ditemukan",
+      };
+    }
+
+    if (region._count.kosts > 0) {
+      return {
+        success: false,
+        message:
+          "Wilayah tidak dapat dihapus karena masih digunakan oleh data kost",
+      };
+    }
+
+    await prisma.region.delete({
+      where: {
+        id: regionId,
+      },
+    });
+
+    revalidateRegionPages();
+
+    return {
+      success: true,
+      message: "Wilayah berhasil dihapus",
+    };
+  } catch (error) {
+    console.error("DELETE_REGION_ERROR", error);
+
     return {
       success: false,
-      message: "Nama wilayah tidak valid",
+      message: "Wilayah gagal dihapus",
     };
   }
-
-  const region = await prisma.region.findUnique({
-    where: {
-      id,
-    },
-  });
-
-  if (!region) {
-    return {
-      success: false,
-      message: "Wilayah tidak ditemukan",
-    };
-  }
-
-  const slug = await generateUniqueSlug(parsed.data.name, id);
-
-  await prisma.region.update({
-    where: {
-      id,
-    },
-    data: {
-      name: parsed.data.name,
-      slug,
-    },
-  });
-
-  revalidatePath("/admin/regions");
-
-  return {
-    success: true,
-    message: "Wilayah berhasil diperbarui",
-  };
-}
-
-export async function deleteRegionAction(id: string) {
-  await requireAdmin();
-
-  const region = await prisma.region.findUnique({
-    where: {
-      id,
-    },
-  });
-
-  if (!region) {
-    return {
-      success: false,
-      message: "Wilayah tidak ditemukan",
-    };
-  }
-
-  const kostCount = await prisma.kost.count({
-    where: {
-      regionId: id,
-    },
-  });
-
-  if (kostCount > 0) {
-    return {
-      success: false,
-      message: "Wilayah tidak bisa dihapus karena masih digunakan data kost",
-    };
-  }
-
-  await prisma.region.delete({
-    where: {
-      id,
-    },
-  });
-
-  revalidatePath("/admin/regions");
-
-  return {
-    success: true,
-    message: "Wilayah berhasil dihapus",
-  };
 }

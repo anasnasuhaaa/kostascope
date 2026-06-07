@@ -153,7 +153,7 @@ function InfoCard({
 
         <div className="min-w-0">
           <p className="text-xs font-medium text-muted-foreground">{label}</p>
-          <p className="mt-1 break-words text-sm font-bold">{value}</p>
+          <p className="mt-1 wrap-break-words text-sm font-bold">{value}</p>
         </div>
       </div>
     </div>
@@ -265,7 +265,7 @@ export default async function AdminKostDetailPage({
           <div className="overflow-hidden rounded-3xl border bg-background p-3 shadow-sm">
             {mainImage ? (
               <div className="grid gap-3 lg:grid-cols-[1.35fr_0.65fr]">
-                <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-muted">
+                <div className="relative aspect-4/3 overflow-hidden rounded-2xl bg-muted">
                   <Image
                     src={mainImage.url}
                     alt={mainImage.altText ?? kost.name}
@@ -327,7 +327,7 @@ export default async function AdminKostDetailPage({
                     rel="noreferrer"
                     className="group overflow-hidden rounded-2xl border bg-muted"
                   >
-                    <div className="relative aspect-[4/3]">
+                    <div className="relative aspect-4/3">
                       <Image
                         src={image.url}
                         alt={image.altText ?? `${kost.name} ${index + 1}`}
@@ -385,7 +385,7 @@ export default async function AdminKostDetailPage({
               {kost.prices.map((price) => (
                 <div
                   key={price.id}
-                  className="rounded-2xl border bg-gradient-to-br from-white to-red-50 p-4"
+                  className="rounded-2xl border bg-linear-to-br from-white to-red-50 p-4"
                 >
                   <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-50 text-[#BE1E2D] ring-1 ring-red-100">
@@ -414,6 +414,18 @@ export default async function AdminKostDetailPage({
 
           <div className="grid gap-3">
             <InfoCard icon={Home} label="Wilayah" value={kost.region.name} />
+
+            <InfoCard
+              icon={UserRound}
+              label="Public Relation Wilayah"
+              value={kost.region.publicRelationName ?? "Belum tersedia"}
+            />
+
+            <InfoCard
+              icon={Phone}
+              label="WhatsApp Public Relation"
+              value={kost.region.publicRelationWhatsapp ?? "Belum tersedia"}
+            />
 
             <InfoCard
               icon={Phone}
