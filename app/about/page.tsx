@@ -200,7 +200,7 @@ export default function AboutPage() {
           </section>
         </ScrollReveal>
 
-        <ScrollReveal>
+        {/* <ScrollReveal>
           <section className="bg-white py-20">
             <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
               <div className="overflow-hidden rounded-3xl border border-red-100 bg-white p-3 shadow-xl shadow-red-950/5">
@@ -243,7 +243,7 @@ export default function AboutPage() {
               </div>
             </div>
           </section>
-        </ScrollReveal>
+        </ScrollReveal> */}
 
         {/* <section className="bg-white px-4 pb-20 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-7xl overflow-hidden rounded-[2rem] bg-[#BE1E2D] px-6 py-14 text-center text-white shadow-2xl shadow-red-950/20">
