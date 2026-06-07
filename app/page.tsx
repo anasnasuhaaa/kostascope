@@ -31,6 +31,16 @@ import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
+const SITE_URL = "https://angkasakost.ormawaeksekutifpku.com";
+
+const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "AngkasaKost",
+  alternateName: "Angkasa Kost",
+  url: SITE_URL,
+};
+
 const needs = [
   "Dekat kampus",
   "Harga bulanan dan tahunan",

@@ -10,17 +10,65 @@ const inter = Inter({
   display: "swap",
 });
 
+
+const SITE_URL = "https://angkasakost.ormawaeksekutifpku.com";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+
   title: {
-    default: "AngkasaKost",
-    template: "%s - AngkasaKost",
+    default: "AngkasaKost | Informasi Kost Sekitar IPB Dramaga",
+    template: "%s | AngkasaKost",
   },
-  description:
-    "Platform informasi kost untuk membantu mahasiswa menemukan hunian yang sesuai di sekitar IPB.",
+
   icons: {
     icon: "/kostalogo.png",
     shortcut: "/kostalogo.png",
     apple: "/kostalogo.png",
+  },
+
+  description:
+    "AngkasaKost membantu mahasiswa baru IPB menemukan informasi kost sekitar Kampus IPB Dramaga berdasarkan wilayah, harga, fasilitas, dan jarak ke kampus.",
+
+  applicationName: "AngkasaKost",
+
+  alternates: {
+    canonical: "/",
+  },
+
+  openGraph: {
+    type: "website",
+    locale: "id_ID",
+    url: SITE_URL,
+    siteName: "AngkasaKost",
+    title: "AngkasaKost | Informasi Kost Sekitar IPB Dramaga",
+    description:
+      "Temukan informasi kost sekitar Kampus IPB Dramaga berdasarkan wilayah, harga, fasilitas, dan jarak ke kampus.",
+    images: [
+      {
+        url: "/kostalogo.png",
+        width: 1200,
+        height: 630,
+        alt: "AngkasaKost - Informasi Kost Sekitar IPB Dramaga",
+      },
+    ],
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "AngkasaKost | Informasi Kost Sekitar IPB Dramaga",
+    description:
+      "Temukan informasi kost sekitar Kampus IPB Dramaga berdasarkan wilayah, harga, fasilitas, dan jarak ke kampus.",
+    images: ["/opengraph-image.jpg"],
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
   },
 };
 
@@ -34,7 +82,7 @@ export default function RootLayout({
       <body className="min-h-full font-sans">
         {children}
 
-        <Toaster position="top-right" richColors duration={1500}/>
+        <Toaster position="top-right" richColors duration={1500} />
       </body>
     </html>
   );

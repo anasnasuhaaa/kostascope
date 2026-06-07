@@ -13,6 +13,17 @@ import {
   Sparkles,
 } from "lucide-react";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Tentang AngkasaKost",
+  description:
+    "Kenali AngkasaKost, platform informasi kost sekitar IPB Dramaga yang dikembangkan untuk membantu mahasiswa baru IPB memilih hunian.",
+  alternates: {
+    canonical: "/about",
+  },
+};
+
 const values = [
   {
     title: "Responsif",

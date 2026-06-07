@@ -6,6 +6,17 @@ import SiteHeader from "@/components/site-header";
 import { prisma } from "@/lib/prisma";
 export const dynamic = "force-dynamic";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Daftar Kost Sekitar IPB Dramaga",
+  description:
+    "Jelajahi daftar kost sekitar Kampus IPB Dramaga berdasarkan wilayah, harga, fasilitas, dan jarak ke kampus melalui AngkasaKost.",
+  alternates: {
+    canonical: "/kost",
+  },
+};
+
 type KostPageProps = {
   searchParams?: Promise<{
     q?: string | string[];

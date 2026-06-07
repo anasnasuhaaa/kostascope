@@ -245,27 +245,78 @@ export async function generateMetadata({
 }: DetailKostPageProps): Promise<Metadata> {
   const { slug } = await params;
 
-  const kost = await prisma.kost.findUnique({
+  const kost = await prisma.kost.findFirst({
     where: {
       slug,
+      status: "PUBLISHED",
     },
     select: {
       name: true,
+      slug: true,
       description: true,
+      images: {
+        orderBy: {
+          sortOrder: "asc",
+        },
+        take: 1,
+        select: {
+          url: true,
+          altText: true,
+        },
+      },
+      region: {
+        select: {
+          name: true,
+        },
+      },
     },
   });
 
   if (!kost) {
     return {
-      title: "Kost Tidak Ditemukan - Kostascope",
+      title: "Kost Tidak Ditemukan",
+      robots: {
+        index: false,
+        follow: false,
+      },
     };
   }
 
+  const description =
+    kost.description ??
+    `Lihat informasi ${kost.name} di wilayah ${kost.region.name}, termasuk harga, fasilitas, lokasi, dan kontak Public Relation melalui AngkasaKost.`;
+
+  const mainImage = kost.images[0];
+
   return {
-    title: `${kost.name} - Kostascope`,
-    description:
-      kost.description ??
-      `Lihat detail ${kost.name}, harga, fasilitas, lokasi, dan kontak narahubung.`,
+    title: `${kost.name} - Kost ${kost.region.name}`,
+    description,
+
+    alternates: {
+      canonical: `/kost/${kost.slug}`,
+    },
+
+    openGraph: {
+      type: "website",
+      title: `${kost.name} | AngkasaKost`,
+      description,
+      url: `/kost/${kost.slug}`,
+      images: mainImage
+        ? [
+            {
+              url: mainImage.url,
+              alt: mainImage.altText ?? kost.name,
+            },
+          ]
+        : ["/opengraph-image.jpg"],
+    },
+
+    twitter: {
+      card: "summary_large_image",
+      title: `${kost.name} | AngkasaKost`,
+      description,
+      images: mainImage ? [mainImage.url] : ["/opengraph-image.jpg"],
+    },
   };
 }
 
