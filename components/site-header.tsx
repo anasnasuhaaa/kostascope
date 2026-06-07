@@ -42,7 +42,7 @@ export default function SiteHeader() {
   }, [pathname]);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-red-100/70 bg-white/90 backdrop-blur-xl">
+    <header className="sticky md:not-last:sticky top-0 z-50 border-b border-red-100/70 bg-white/90 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* =========================================================
             LOGO
@@ -139,54 +139,54 @@ export default function SiteHeader() {
       </div>
 
       {/* =========================================================
-          MENU MOBILE
-      ========================================================== */}
+    MENU MOBILE
+    Panel menggunakan posisi absolute agar tidak mendorong
+    konten halaman ke bawah ketika dibuka.
+========================================================== */}
       <div
         id="mobile-navigation"
+        aria-hidden={!open}
         className={[
-          "grid overflow-hidden border-t border-red-100 bg-white transition-all duration-300 ease-out md:hidden",
+          "absolute inset-x-0 top-full border-b border-red-100 bg-white/95 shadow-lg shadow-red-950/5 backdrop-blur-xl transition duration-200 ease-out md:hidden",
           open
-            ? "grid-rows-[1fr] opacity-100"
-            : "grid-rows-[0fr] border-t-transparent opacity-0",
+            ? "visible translate-y-0 opacity-100"
+            : "invisible -translate-y-2 opacity-0",
         ].join(" ")}
       >
-        <div className="min-h-0">
-          <nav
-            aria-label="Navigasi mobile"
-            className="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-4 sm:px-6"
+        <nav
+          aria-label="Navigasi mobile"
+          className="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-4 sm:px-6"
+        >
+          {navItems.map((item) => {
+            const isActive = isNavigationActive(pathname, item.href);
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                tabIndex={open ? 0 : -1}
+                className={[
+                  "flex items-center justify-between rounded-xl px-4 py-3 text-sm font-bold transition-colors duration-200",
+                  isActive
+                    ? "bg-red-50 text-[#BE1E2D]"
+                    : "text-zinc-700 hover:bg-zinc-50 hover:text-[#BE1E2D]",
+                ].join(" ")}
+              >
+                <span>{item.label}</span>
+
+              </Link>
+            );
+          })}
+
+          <Link
+            href="/kost"
+            tabIndex={open ? 0 : -1}
+            className="mt-3 flex h-11 items-center justify-center gap-2 rounded-xl bg-[#BE1E2D] px-4 text-sm font-black text-white shadow-sm transition-colors duration-200 hover:bg-[#9F1725]"
           >
-            {navItems.map((item) => {
-              const isActive = isNavigationActive(pathname, item.href);
-
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={[
-                    "flex items-center justify-between rounded-xl px-4 py-3 text-sm font-bold transition duration-300",
-                    isActive
-                      ? "bg-red-50 text-[#BE1E2D]"
-                      : "text-zinc-700 hover:bg-zinc-50 hover:text-[#BE1E2D]",
-                  ].join(" ")}
-                >
-                  <span>{item.label}</span>
-
-                  {isActive && (
-                    <span className="h-2 w-2 rounded-full bg-[#BE1E2D]" />
-                  )}
-                </Link>
-              );
-            })}
-
-            <Link
-              href="/kost"
-              className="mt-3 flex h-11 items-center justify-center gap-2 rounded-xl bg-[#BE1E2D] px-4 text-sm font-black text-white shadow-sm transition duration-300 hover:bg-[#9F1725]"
-            >
-              Cari Kost Sekarang
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </nav>
-        </div>
+            Cari Kost Sekarang
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </nav>
       </div>
     </header>
   );
