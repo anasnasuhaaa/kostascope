@@ -30,7 +30,7 @@ function buildWhatsappUrl({
       `Saya tertarik dengan informasi ${kostName} yang saya lihat di AngkasaKost.`,
       `Wilayah: ${regionName}.`,
       "",
-      "Apakah saya boleh meminta informasi lebih lanjut mengenai ketersediaan kamar dan proses surveinya?",
+      "Saya ingin meminta informasi lebih lanjut,",
       "",
       "Terima kasih.",
     ].join("\n"),
