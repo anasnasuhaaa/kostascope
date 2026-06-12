@@ -45,7 +45,7 @@ const needs = [
   "Dekat kampus",
   "Harga bulanan dan tahunan",
   "Fasilitas lengkap",
-  "Kost putra / putri",
+  "Kos putra / putri",
   "AC",
   "Wifi",
 ];
@@ -54,13 +54,13 @@ const benefits = [
   {
     title: "Data Terstruktur",
     description:
-      "Informasi kost disusun rapi mulai dari wilayah, harga, fasilitas, hingga kontak narahubung.",
+      "Informasi kos disusun rapi mulai dari wilayah, harga, fasilitas, hingga kontak narahubung.",
     icon: Database,
   },
   {
     title: "Filter Cerdas",
     description:
-      "Cari kost berdasarkan wilayah, tipe penghuni, fasilitas, dan kebutuhan sewa.",
+      "Cari kos berdasarkan wilayah, tipe penghuni, fasilitas, dan kebutuhan sewa.",
     icon: Filter,
   },
   {
@@ -72,7 +72,7 @@ const benefits = [
   {
     title: "Kontak Langsung",
     description:
-      "Hubungi narahubung kost secara langsung untuk proses pengecekan lebih lanjut.",
+      "Hubungi narahubung kos secara langsung untuk proses pengecekan lebih lanjut.",
     icon: PhoneCall,
   },
 ];
@@ -113,7 +113,7 @@ function getNeedIcon(need: string) {
     return Sparkles;
   }
 
-  if (need === "Kost putra / putri") {
+  if (need === "Kos putra / putri") {
     return ShieldCheck;
   }
 
@@ -133,7 +133,7 @@ function HouseVector() {
       <div className="relative overflow-hidden rounded-[2rem] border border-red-100 bg-white p-4 shadow-2xl shadow-red-950/10 transition duration-500 hover:-translate-y-1 hover:shadow-red-950/15 sm:p-6">
         <div className="absolute right-4 top-4 z-10 inline-flex items-center gap-1.5 rounded-full bg-red-50 px-3 py-2 text-[10px] font-bold text-[#BE1E2D] shadow-sm ring-1 ring-red-100 sm:right-6 sm:top-6 sm:px-4 sm:text-xs">
           <BadgeCheck className="h-3.5 w-3.5" />
-          Kost verified
+          Kos verified
         </div>
 
         <svg
@@ -444,12 +444,12 @@ export default async function HomePage() {
                 </div>
 
                 <h1 className="mx-auto max-w-2xl text-4xl font-black tracking-tight text-zinc-950 sm:text-5xl lg:mx-0 lg:text-6xl">
-                  Temukan Kost Ideal di{" "}
+                  Temukan Kos Ideal di{" "}
                   <span className="text-[#BE1E2D]">Sekitar IPB Dramaga</span>
                 </h1>
 
                 <p className="mx-auto mt-6 max-w-xl text-base leading-8 text-zinc-600 lg:mx-0">
-                  Akses informasi kost yang lebih mudah, rapi, dan relevan dengan
+                  Akses informasi kos yang lebih mudah, rapi, dan relevan dengan
                   kebutuhan kamu di IPB.
                 </p>
 
@@ -462,7 +462,7 @@ export default async function HomePage() {
 
                     <input
                       name="q"
-                      placeholder="Cari wilayah atau nama kost..."
+                      placeholder="Cari wilayah atau nama kos..."
                       className="h-12 w-full rounded-xl border border-transparent bg-[#FAFAFC] pl-10 pr-4 text-sm outline-none transition focus:border-[#BE1E2D] focus:bg-white focus:ring-4 focus:ring-red-100"
                     />
                   </div>
@@ -512,12 +512,12 @@ export default async function HomePage() {
                       </span>
 
                       <h2 className="text-lg font-black tracking-tight text-[#BE1E2D] sm:text-3xl lg:text-4xl">
-                        Kost Rekomendasi Kami
+                        Kos Rekomendasi Kami
                       </h2>
                     </div>
 
                     <p className="mt-4 max-w-2xl text-sm leading-7 text-zinc-600 sm:text-base">
-                      Pilihan Kost terbaik untuk kamu yang menginginkan
+                      Pilihan Kos terbaik untuk kamu yang menginginkan
                       kenyamanan, keamanan, dan akses mudah ke kampus IPB Dramaga.
                     </p>
                   </div>
@@ -792,7 +792,7 @@ export default async function HomePage() {
                         (total, region) => total + region._count.kosts,
                         0
                       )}{" "}
-                      Kost
+                      Kos
                     </p>
                   </div>
                 </div>
@@ -838,12 +838,12 @@ export default async function HomePage() {
                             <span className="font-black text-[#BE1E2D]">
                               {region._count.kosts}
                             </span>{" "}
-                            kost tersedia
+                            kos tersedia
                           </p>
                         </div>
 
                         <span className="mt-4 inline-flex items-center gap-1.5 text-[11px] font-black text-[#BE1E2D] sm:text-xs">
-                          Lihat Kost
+                          Lihat Kos
                           <ArrowRight className="h-3.5 w-3.5 transition duration-300 group-hover:translate-x-1" />
                         </span>
                       </div>
@@ -940,7 +940,7 @@ export default async function HomePage() {
                   href="/kost"
                   className="mt-8 inline-flex items-center gap-2 rounded-xl bg-white px-8 py-3 text-sm font-black text-[#BE1E2D] shadow-lg shadow-red-950/10 transition hover:-translate-y-0.5 hover:bg-red-50 hover:shadow-xl"
                 >
-                  Cari Kost Sekarang
+                  Cari Kos Sekarang
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>

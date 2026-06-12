@@ -10,6 +10,12 @@ type RegionActionResult = {
   message: string;
 };
 
+/**
+ * Mengubah nama wilayah menjadi slug.
+ *
+ * Contoh:
+ * "Babakan Tengah" → "babakan-tengah"
+ */
 function createSlug(value: string) {
   return value
     .trim()
@@ -20,14 +26,10 @@ function createSlug(value: string) {
     .replace(/^-+|-+$/g, "");
 }
 
-function normalizeWhatsapp(value: string) {
-  return value.replace(/\D/g, "");
-}
-
-function isValidWhatsapp(value: string) {
-  return /^628\d{7,13}$/.test(value);
-}
-
+/**
+ * Memastikan hanya pengguna yang sudah login
+ * yang dapat menjalankan action admin.
+ */
 async function requireAdmin() {
   const session = await auth();
 
@@ -38,12 +40,28 @@ async function requireAdmin() {
   return session;
 }
 
+/**
+ * Refresh halaman yang berkaitan dengan data wilayah
+ * setelah terjadi perubahan.
+ */
 function revalidateRegionPages() {
   revalidatePath("/admin/regions");
   revalidatePath("/");
   revalidatePath("/kost");
 }
 
+/**
+ * ============================================================
+ * TAMBAH WILAYAH
+ * ============================================================
+ *
+ * Region hanya menyimpan:
+ * - nama wilayah;
+ * - slug.
+ *
+ * Public Relation ditambahkan secara terpisah melalui
+ * RegionPublicRelationModal.
+ */
 export async function createRegionAction(
   formData: FormData,
 ): Promise<RegionActionResult> {
@@ -51,33 +69,11 @@ export async function createRegionAction(
     await requireAdmin();
 
     const name = String(formData.get("name") ?? "").trim();
-    const publicRelationName = String(
-      formData.get("publicRelationName") ?? "",
-    ).trim();
-
-    const publicRelationWhatsapp = normalizeWhatsapp(
-      String(formData.get("publicRelationWhatsapp") ?? ""),
-    );
 
     if (!name) {
       return {
         success: false,
         message: "Nama wilayah wajib diisi",
-      };
-    }
-
-    if (!publicRelationName) {
-      return {
-        success: false,
-        message: "Nama Public Relation wajib diisi",
-      };
-    }
-
-    if (!isValidWhatsapp(publicRelationWhatsapp)) {
-      return {
-        success: false,
-        message:
-          "Nomor WhatsApp Public Relation harus menggunakan format 628..., tanpa spasi atau tanda baca",
       };
     }
 
@@ -92,8 +88,16 @@ export async function createRegionAction(
 
     const existingRegion = await prisma.region.findFirst({
       where: {
-        OR: [{ name }, { slug }],
+        OR: [
+          {
+            name,
+          },
+          {
+            slug,
+          },
+        ],
       },
+
       select: {
         id: true,
       },
@@ -110,8 +114,6 @@ export async function createRegionAction(
       data: {
         name,
         slug,
-        publicRelationName,
-        publicRelationWhatsapp,
       },
     });
 
@@ -119,7 +121,8 @@ export async function createRegionAction(
 
     return {
       success: true,
-      message: "Wilayah berhasil ditambahkan",
+      message:
+        "Wilayah berhasil ditambahkan. Silakan tambahkan Public Relation melalui tombol Kelola PR.",
     };
   } catch (error) {
     console.error("CREATE_REGION_ERROR", error);
@@ -131,6 +134,14 @@ export async function createRegionAction(
   }
 }
 
+/**
+ * ============================================================
+ * EDIT WILAYAH
+ * ============================================================
+ *
+ * Action ini hanya mengubah nama wilayah dan slug.
+ * Data Public Relation dikelola melalui action terpisah.
+ */
 export async function updateRegionAction(
   regionId: string,
   formData: FormData,
@@ -139,33 +150,11 @@ export async function updateRegionAction(
     await requireAdmin();
 
     const name = String(formData.get("name") ?? "").trim();
-    const publicRelationName = String(
-      formData.get("publicRelationName") ?? "",
-    ).trim();
-
-    const publicRelationWhatsapp = normalizeWhatsapp(
-      String(formData.get("publicRelationWhatsapp") ?? ""),
-    );
 
     if (!name) {
       return {
         success: false,
         message: "Nama wilayah wajib diisi",
-      };
-    }
-
-    if (!publicRelationName) {
-      return {
-        success: false,
-        message: "Nama Public Relation wajib diisi",
-      };
-    }
-
-    if (!isValidWhatsapp(publicRelationWhatsapp)) {
-      return {
-        success: false,
-        message:
-          "Nomor WhatsApp Public Relation harus menggunakan format 628..., tanpa spasi atau tanda baca",
       };
     }
 
@@ -178,13 +167,39 @@ export async function updateRegionAction(
       };
     }
 
+    const region = await prisma.region.findUnique({
+      where: {
+        id: regionId,
+      },
+
+      select: {
+        id: true,
+      },
+    });
+
+    if (!region) {
+      return {
+        success: false,
+        message: "Wilayah tidak ditemukan",
+      };
+    }
+
     const existingRegion = await prisma.region.findFirst({
       where: {
-        OR: [{ name }, { slug }],
+        OR: [
+          {
+            name,
+          },
+          {
+            slug,
+          },
+        ],
+
         NOT: {
           id: regionId,
         },
       },
+
       select: {
         id: true,
       },
@@ -201,11 +216,10 @@ export async function updateRegionAction(
       where: {
         id: regionId,
       },
+
       data: {
         name,
         slug,
-        publicRelationName,
-        publicRelationWhatsapp,
       },
     });
 
@@ -225,6 +239,18 @@ export async function updateRegionAction(
   }
 }
 
+/**
+ * ============================================================
+ * HAPUS WILAYAH
+ * ============================================================
+ *
+ * Wilayah hanya dapat dihapus jika:
+ * - tidak memiliki data kost;
+ * - tidak memiliki Public Relation.
+ *
+ * Pemeriksaan Public Relation mencegah data PR terhapus
+ * tanpa sengaja karena relasi memakai onDelete: Cascade.
+ */
 export async function deleteRegionAction(
   regionId: string,
 ): Promise<RegionActionResult> {
@@ -235,10 +261,12 @@ export async function deleteRegionAction(
       where: {
         id: regionId,
       },
+
       include: {
         _count: {
           select: {
             kosts: true,
+            publicRelations: true,
           },
         },
       },
@@ -256,6 +284,14 @@ export async function deleteRegionAction(
         success: false,
         message:
           "Wilayah tidak dapat dihapus karena masih digunakan oleh data kost",
+      };
+    }
+
+    if (region._count.publicRelations > 0) {
+      return {
+        success: false,
+        message:
+          "Wilayah tidak dapat dihapus karena masih memiliki Public Relation. Hapus seluruh PR terlebih dahulu.",
       };
     }
 

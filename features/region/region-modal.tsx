@@ -19,6 +19,18 @@ import {
   updateRegionAction,
 } from "@/features/region/actions";
 
+/**
+ * ============================================================
+ * PROPS REGION MODAL
+ * ============================================================
+ *
+ * RegionModal hanya bertugas:
+ * - menambahkan wilayah;
+ * - mengubah nama wilayah.
+ *
+ * Public Relation tidak lagi dikelola dari modal ini.
+ * Gunakan RegionPublicRelationModal untuk mengelola PR.
+ */
 type RegionModalProps =
   | {
       mode: "create";
@@ -29,8 +41,6 @@ type RegionModalProps =
       region: {
         id: string;
         name: string;
-        publicRelationName: string | null;
-        publicRelationWhatsapp: string | null;
       };
     };
 
@@ -42,11 +52,13 @@ export default function RegionModal({
   const [isPending, startTransition] = useTransition();
 
   const [name, setName] = useState("");
-  const [publicRelationName, setPublicRelationName] = useState("");
-  const [publicRelationWhatsapp, setPublicRelationWhatsapp] = useState("");
 
   const isEditMode = mode === "edit";
 
+  /**
+   * Isi form ketika modal edit dibuka.
+   * Kosongkan form ketika modal tambah dibuka.
+   */
   useEffect(() => {
     if (!open) {
       return;
@@ -54,16 +66,18 @@ export default function RegionModal({
 
     if (isEditMode) {
       setName(region.name);
-      setPublicRelationName(region.publicRelationName ?? "");
-      setPublicRelationWhatsapp(region.publicRelationWhatsapp ?? "");
       return;
     }
 
     setName("");
-    setPublicRelationName("");
-    setPublicRelationWhatsapp("");
   }, [open, isEditMode, region]);
 
+  /**
+   * Simpan data wilayah.
+   *
+   * - mode edit   → updateRegionAction()
+   * - mode create → createRegionAction()
+   */
   function handleSubmit(formData: FormData) {
     startTransition(async () => {
       const result = isEditMode
@@ -103,8 +117,9 @@ export default function RegionModal({
           </DialogTitle>
 
           <DialogDescription>
-            Isi nama wilayah dan Public Relation yang bertanggung jawab
-            menangani pertanyaan calon penghuni.
+            {isEditMode
+              ? "Perbarui nama wilayah kost."
+              : "Tambahkan wilayah kost baru. Public Relation dapat ditambahkan setelah wilayah berhasil dibuat."}
           </DialogDescription>
         </DialogHeader>
 
@@ -128,60 +143,6 @@ export default function RegionModal({
               className="h-10 w-full rounded-md border bg-background px-3 text-sm outline-none transition focus:border-[#BE1E2D] focus:ring-2 focus:ring-red-100 disabled:cursor-not-allowed disabled:opacity-60"
               required
             />
-          </div>
-
-          <div className="space-y-2">
-            <label
-              htmlFor="public-relation-name"
-              className="text-sm font-medium"
-            >
-              Nama Public Relation
-            </label>
-
-            <input
-              id="public-relation-name"
-              name="publicRelationName"
-              type="text"
-              value={publicRelationName}
-              disabled={isPending}
-              onChange={(event) =>
-                setPublicRelationName(event.target.value)
-              }
-              placeholder="Contoh: Anas Nasuha"
-              className="h-10 w-full rounded-md border bg-background px-3 text-sm outline-none transition focus:border-[#BE1E2D] focus:ring-2 focus:ring-red-100 disabled:cursor-not-allowed disabled:opacity-60"
-              required
-            />
-          </div>
-
-          <div className="space-y-2">
-            <label
-              htmlFor="public-relation-whatsapp"
-              className="text-sm font-medium"
-            >
-              Nomor WhatsApp Public Relation
-            </label>
-
-            <input
-              id="public-relation-whatsapp"
-              name="publicRelationWhatsapp"
-              type="text"
-              inputMode="numeric"
-              value={publicRelationWhatsapp}
-              disabled={isPending}
-              onChange={(event) =>
-                setPublicRelationWhatsapp(
-                  event.target.value.replace(/\D/g, ""),
-                )
-              }
-              placeholder="Contoh: 6281234567890"
-              className="h-10 w-full rounded-md border bg-background px-3 text-sm outline-none transition focus:border-[#BE1E2D] focus:ring-2 focus:ring-red-100 disabled:cursor-not-allowed disabled:opacity-60"
-              required
-            />
-
-            <p className="text-xs text-muted-foreground">
-              Gunakan format 628..., tanpa tanda tambah, spasi, atau tanda
-              hubung.
-            </p>
           </div>
 
           <div className="flex justify-end gap-2 pt-2">

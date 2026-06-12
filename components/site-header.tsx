@@ -12,11 +12,11 @@ const navItems = [
     href: "/",
   },
   {
-    label: "Daftar Kost",
+    label: "Daftar Kos",
     href: "/kost",
   },
   {
-    label: "Tentang",
+    label: "About",
     href: "/about",
   },
 ];
@@ -69,7 +69,7 @@ export default function SiteHeader() {
             </p>
 
             <p className="hidden text-[10px] font-bold uppercase tracking-[0.16em] text-zinc-400 sm:block">
-              Kost Sekitar IPB Dramaga
+              Kos Sekitar IPB Dramaga
             </p>
           </div>
         </Link>
@@ -113,7 +113,7 @@ export default function SiteHeader() {
             href="/kost"
             className="group inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#BE1E2D] px-4 text-sm font-black text-white shadow-sm transition duration-300 hover:-translate-y-0.5 hover:bg-[#9F1725] hover:shadow-md hover:shadow-red-950/10"
           >
-            Cari Kost
+            Cari Kos
 
             <Search className="h-4 w-4 transition duration-300 group-hover:translate-x-1" />
           </Link>
@@ -183,7 +183,7 @@ export default function SiteHeader() {
             tabIndex={open ? 0 : -1}
             className="mt-3 flex h-11 items-center justify-center gap-2 rounded-xl bg-[#BE1E2D] px-4 text-sm font-black text-white shadow-sm transition-colors duration-200 hover:bg-[#9F1725]"
           >
-            Cari Kost Sekarang
+            Cari Kos Sekarang
             <ArrowRight className="h-4 w-4" />
           </Link>
         </nav>

@@ -18,7 +18,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Tentang AngkasaKost",
   description:
-    "Kenali AngkasaKost, platform informasi kost sekitar IPB Dramaga yang dikembangkan untuk membantu mahasiswa baru IPB memilih hunian.",
+    "Kenali AngkasaKost, platform informasi kos sekitar IPB Dramaga yang dikembangkan untuk membantu mahasiswa baru IPB memilih hunian.",
   alternates: {
     canonical: "/about",
   },
@@ -37,7 +37,7 @@ const values = [
   },
   {
     title: "Terstruktur",
-    description: "Data kost ditampilkan rapi untuk memudahkan perbandingan.",
+    description: "Data kos ditampilkan rapi untuk memudahkan perbandingan.",
     icon: LayoutList,
   },
   {
@@ -52,12 +52,12 @@ const timeline = [
   {
     title: "Memahami Kebutuhan",
     description:
-      "Membantu mahasiswa mencari kost dengan sistem yang lebih cepat dan rapi.",
+      "Membantu mahasiswa mencari kos dengan sistem yang lebih cepat dan rapi.",
   },
   {
     title: "Menata Informasi",
     description:
-      "Menyajikan data kost dalam bentuk yang mudah dicari dan dibandingkan.",
+      "Menyajikan data kos dalam bentuk yang mudah dicari dan dibandingkan.",
   },
   {
     title: "Menyediakan Referensi",
@@ -67,7 +67,7 @@ const timeline = [
   {
     title: "Menghubungkan Mahasiswa",
     description:
-      "Memudahkan pencari kost menghubungi narahubung untuk proses lanjutan.",
+      "Memudahkan pencari kos menghubungi narahubung untuk proses lanjutan.",
   },
 ];
 
@@ -91,7 +91,7 @@ export default function AboutPage() {
                   Tentang <span className="text-[#BE1E2D]">AngkasaKost</span>
                 </h1>
                 <p className="mt-6 max-w-xl text-base leading-8 text-zinc-600">
-                  AngkasaKost hadir sebagai program kerja Biro Riset dan Teknologi Ormawa Eksekutif PKU untuk membantu mahasiswa baru IPB mengenal berbagai pilihan kost di sekitar Kampus IPB Dramaga. Dengan informasi yang disusun secara rapi dan mudah dipahami, AngkasaKost diharapkan dapat mempermudah proses pencarian hunian bagi mahasiswa baru.
+                  AngkasaKost hadir sebagai program kerja Biro Riset dan Teknologi Ormawa Eksekutif PKU untuk membantu mahasiswa baru IPB mengenal berbagai pilihan kos di sekitar Kampus IPB Dramaga. Dengan informasi yang disusun secara rapi dan mudah dipahami, AngkasaKost diharapkan dapat mempermudah proses pencarian hunian bagi mahasiswa baru.
                 </p>
               </div>
 
@@ -133,7 +133,7 @@ export default function AboutPage() {
             <div className="space-y-6 text-base leading-8 text-zinc-600">
               <p>
                 Kostascope hadir untuk memberikan ruang informasi hunian yang
-                lebih rapi dan mudah dipahami. Pencarian kost sering kali
+                lebih rapi dan mudah dipahami. Pencarian kos sering kali
                 memakan waktu karena data tersebar, tidak seragam, dan sulit
                 dibandingkan.
               </p>
@@ -221,7 +221,7 @@ export default function AboutPage() {
                 </h2>
                 <p className="mt-5 text-base leading-8 text-zinc-600">
                   Setiap fitur dirancang untuk mengurangi kebingungan dalam
-                  mencari kost. Mulai dari pencarian wilayah, filter fasilitas,
+                  mencari kos. Mulai dari pencarian wilayah, filter fasilitas,
                   hingga kontak langsung ke narahubung.
                 </p>
 
@@ -266,7 +266,7 @@ export default function AboutPage() {
               Siap Menemukan Hunianmu?
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-zinc-600">
-              Mulai eksplorasi katalog kost yang telah kami sediakan.
+              Mulai eksplorasi katalog kos yang telah kami sediakan.
             </p>
 
             <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">

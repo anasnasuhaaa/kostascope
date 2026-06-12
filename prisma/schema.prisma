@@ -20,14 +20,40 @@ model User {
 }
 
 model Region {
-  id        String   @id @default(cuid())
-  name      String   @unique
-  slug      String   @unique
+  id                     String                 @id @default(cuid())
+  name                   String                 @unique
+  slug                   String                 @unique
+
+  // Field lama dipertahankan sementara untuk migrasi data lama.
   publicRelationName     String?
   publicRelationWhatsapp String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  kosts     Kost[]
+
+  createdAt              DateTime               @default(now())
+  updatedAt              DateTime               @updatedAt
+
+  kosts                   Kost[]
+
+  // Relasi baru: satu wilayah dapat memiliki banyak Public Relation.
+  publicRelations        RegionPublicRelation[]
+}
+
+model RegionPublicRelation {
+  id              String   @id @default(cuid())
+  name            String
+  whatsapp        String
+  isActive        Boolean  @default(true)
+  assignmentCount Int      @default(0)
+  lastAssignedAt  DateTime?
+
+  regionId        String
+  region          Region   @relation(fields: [regionId], references: [id], onDelete: Cascade)
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([regionId, whatsapp])
+  @@index([regionId])
+  @@index([regionId, isActive])
 }
 
 model Facility {
