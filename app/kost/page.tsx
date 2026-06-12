@@ -229,13 +229,13 @@ function FilterForm({
   return (
     <form action="/kost" className="space-y-5">
       <div className="flex items-start justify-between gap-3">
-        <div>
+        {/* <div>
           <h2 className="text-lg font-black">Filter Kos</h2>
 
           <p className="mt-1 text-sm leading-5 text-zinc-500">
             Sesuaikan hasil pencarian dengan kebutuhanmu.
           </p>
-        </div>
+        </div> */}
 
         {hasActiveFilter && (
           <Link
@@ -486,75 +486,75 @@ export default async function KostPage({
         AND: [
           q
             ? {
-                OR: [
-                  {
+              OR: [
+                {
+                  name: {
+                    contains: q,
+                    mode: "insensitive",
+                  },
+                },
+                {
+                  description: {
+                    contains: q,
+                    mode: "insensitive",
+                  },
+                },
+                {
+                  region: {
                     name: {
                       contains: q,
                       mode: "insensitive",
                     },
                   },
-                  {
-                    description: {
-                      contains: q,
-                      mode: "insensitive",
-                    },
-                  },
-                  {
-                    region: {
-                      name: {
-                        contains: q,
-                        mode: "insensitive",
-                      },
-                    },
-                  },
-                ],
-              }
+                },
+              ],
+            }
             : {},
 
           regionId
             ? {
-                regionId,
-              }
+              regionId,
+            }
             : {},
 
           genderType
             ? {
-                genderType: genderType as any,
-              }
+              genderType: genderType as any,
+            }
             : {},
 
           rentType
             ? {
-                prices: {
-                  some: {
-                    type: rentType as any,
-                  },
+              prices: {
+                some: {
+                  type: rentType as any,
                 },
-              }
+              },
+            }
             : {},
 
           waterFeeType
             ? {
-                waterFeeType: waterFeeType as any,
-              }
+              waterFeeType: waterFeeType as any,
+            }
             : {},
 
           electricityType
             ? {
-                electricityType: electricityType as any,
-              }
+              electricityType: electricityType as any,
+            }
             : {},
 
           selectedFacilityIds.length > 0
             ? {
-                facilities: {
-                  some: {
-                    facilityId: {
-                      in: selectedFacilityIds,
-                    },
+              facilities: {
+                some: {
+                  facilityId: {
+                    in: selectedFacilityIds,
                   },
                 },
-              }
+              },
+            }
             : {},
         ],
       },
@@ -641,13 +641,13 @@ export default async function KostPage({
 
   const hasActiveFilter = Boolean(
     q ||
-      regionId ||
-      genderType ||
-      rentType ||
-      waterFeeType ||
-      electricityType ||
-      selectedFacilityIds.length > 0 ||
-      sort !== "newest",
+    regionId ||
+    genderType ||
+    rentType ||
+    waterFeeType ||
+    electricityType ||
+    selectedFacilityIds.length > 0 ||
+    sort !== "newest",
   );
 
   const activeFilterCount = [

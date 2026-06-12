@@ -43,11 +43,14 @@ export default function KostFilterSheet({
 
       <SheetContent
         side="right"
+        onOpenAutoFocus={(event) => {
+          event.preventDefault();
+        }}
         className="flex w-full flex-col gap-0 p-0 sm:max-w-md"
       >
         <SheetHeader className="border-b border-red-100 px-5 py-5 text-left">
           <SheetTitle className="text-xl font-black">
-            Filter Kost
+            Filter Kos
           </SheetTitle>
 
           <SheetDescription>
