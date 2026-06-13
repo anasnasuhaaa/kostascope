@@ -165,3 +165,42 @@ enum RentPriceType {
   SIX_MONTHS
   YEARLY
 }
+
+model ContactServiceSetting {
+  id        String   @id @default("default")
+  isActive  Boolean  @default(true)
+  timezone  String   @default("Asia/Jakarta")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  schedules ContactServiceSchedule[]
+}
+
+model ContactServiceSchedule {
+  id          String   @id @default(cuid())
+  day         DayOfWeek
+  isActive    Boolean  @default(true)
+
+  // Menyimpan menit sejak pukul 00.00.
+  // Contoh:
+  // 08.00 = 480
+  // 17.00 = 1020
+  startMinute Int
+  endMinute   Int
+
+  settingId   String
+  setting     ContactServiceSetting @relation(fields: [settingId], references: [id], onDelete: Cascade)
+
+  @@unique([settingId, day])
+  @@index([settingId])
+}
+
+enum DayOfWeek {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}

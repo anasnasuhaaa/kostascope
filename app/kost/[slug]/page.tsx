@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { ElementType } from "react";
+import KostContactDialog from "./kost-contact-dialog";
 import {
   Droplets,
   Home,
@@ -303,8 +304,8 @@ export default async function DetailKostPage({
    * Endpoint ini akan memilih PR aktif secara merata,
    * menambah assignmentCount, lalu redirect ke WhatsApp.
    */
-  const whatsappRedirectUrl =
-    `/api/kost/${kost.slug}/whatsapp`;
+  // const whatsappRedirectUrl =
+  //   `/api/kost/${kost.slug}/whatsapp`;
 
   return (
     <div className="min-h-screen bg-[#FAFAFC] text-zinc-950">
@@ -547,26 +548,12 @@ export default async function DetailKostPage({
               </div> */}
 
               <div className="mt-6 grid gap-3">
-                {hasActivePublicRelation ? (
-                  <a
-                    href={whatsappRedirectUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex h-12 items-center justify-center gap-2 rounded-xl bg-[#BE1E2D] text-sm font-black text-white shadow-lg shadow-red-950/10 transition hover:-translate-y-0.5 hover:bg-[#9F1725]"
-                  >
-                    <WhatsappLogo />
-                    Hubungi via Whatsapp
-                  </a>
-                ) : (
-                  <button
-                    type="button"
-                    disabled
-                    className="flex h-12 cursor-not-allowed items-center justify-center gap-2 rounded-xl bg-zinc-200 text-sm font-black text-zinc-500"
-                  >
-                    <WhatsappLogo />
-                    Kontak Belum Tersedia
-                  </button>
-                )}
+                <KostContactDialog
+                  slug={kost.slug}
+                  kostName={kost.name}
+                  regionName={kost.region.name}
+                  hasActivePublicRelation={hasActivePublicRelation}
+                />
 
                 {kost.googleMapsUrl && (
                   <a

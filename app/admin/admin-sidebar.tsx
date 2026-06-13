@@ -12,7 +12,9 @@ import {
   UserCircle,
   PanelLeftClose,
   Users,
+  Clock3
 } from "lucide-react";
+
 
 import {
   Sidebar,
@@ -40,6 +42,11 @@ const adminMenus = [
     label: "Kost",
     href: "/admin/kost",
     icon: Building2,
+  },
+  {
+    label: "Layanan WhatsApp",
+    href: "/admin/contact-service",
+    icon: Clock3,
   },
   {
     label: "Wilayah",
