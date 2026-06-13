@@ -259,7 +259,7 @@ function FilterForm({
           id={`${idPrefix}-q`}
           name="q"
           defaultValue={q}
-          placeholder="Nama kost atau wilayah..."
+          placeholder="Nama kos atau wilayah..."
           className="h-11 w-full rounded-xl border border-red-100 bg-[#FAFAFC] px-4 text-sm outline-none transition focus:border-[#BE1E2D] focus:bg-white focus:ring-4 focus:ring-red-100"
         />
       </div>
