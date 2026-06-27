@@ -226,10 +226,11 @@ export default function KostContactDialog({
           </div>
 
           {/* Card pilihan */}
-          <div className="grid gap-3 p-3 sm:grid-cols-2 sm:gap-4 sm:p-6">
+          <div className="grid gap-3 p-3 sm:grid-cols-1 sm:gap-4 sm:p-6">
             {/* =====================================================
           OPSI MANDIRI
       ====================================================== */}
+
             <button
               type="button"
               onClick={handleDirectContact}
@@ -271,6 +272,7 @@ export default function KostContactDialog({
             {/* =====================================================
           OPSI PREMIUM: KOST FINDER
       ====================================================== */}
+            {/*
             <button
               type="button"
               disabled={!hasActivePublicRelation}
@@ -280,7 +282,6 @@ export default function KostContactDialog({
               }}
               className="group relative flex w-full items-center gap-3 overflow-hidden rounded-2xl border border-red-200 bg-linear-to-br from-[#BE1E2D] via-[#B21B2A] to-[#8F1420] p-3.5 text-left text-white shadow-lg shadow-red-950/20 transition duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-red-950/25 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 sm:min-h-64 sm:flex-col sm:items-stretch sm:p-5"
             >
-              {/* Dekorasi lembut */}
               <div className="absolute -right-10 -top-12 h-32 w-32 rounded-full bg-white/10 sm:h-40 sm:w-40" />
 
               <div className="absolute -bottom-16 -left-10 h-28 w-28 rounded-full bg-white/5 sm:h-40 sm:w-40" />
@@ -326,6 +327,7 @@ export default function KostContactDialog({
                 )}
               </div>
             </button>
+            */}
           </div>
         </DialogContent>
       </Dialog>
